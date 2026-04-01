@@ -1,0 +1,15 @@
+.idea/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+
+agrichain/backend/.env
+agrichain/backend/venv/
+agrichain/backend/.pytest_cache/
+agrichain/backend/.mypy_cache/
+agrichain/backend/app/static/qr/
+agrichain/frontend/node_modules/
+agrichain/frontend/dist/
+agrichain/frontend/.vite/
