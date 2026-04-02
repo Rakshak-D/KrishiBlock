@@ -1,6 +1,6 @@
-# AgriChain
+# KrishiBlock
 
-AgriChain is now the merged product workspace for the code in this repository: the original `agrichain` backend and traceability system, the stronger buyer/farmer dashboard ideas from `kisanlink`, and the bot-first flow concepts from `farm_bot`.
+KrishiBlock is now the merged product workspace for the code in this repository: the original `agrichain` backend and traceability system, the stronger buyer/farmer dashboard ideas from `kisanlink`, and the bot-first flow concepts from `farm_bot`.
 
 The current build gives you one webapp with:
 - web registration and OTP login

@@ -1,12 +1,12 @@
 {
-  "welcome": "[hi] Welcome to AgriChain!",
+  "welcome": "[hi] Welcome to KrishiBlock!",
   "choose_language": "[hi] Choose your language:\n1. English\n2. Kannada\n3. Hindi\n4. Telugu",
   "choose_role": "[hi] Are you a:\n1. Farmer\n2. Buyer",
   "ask_name": "[hi] Enter your full name.",
   "ask_village": "[hi] Enter your village or city.",
   "ask_market_type": "[hi] Choose your market:\n1. Local (India)\n2. Global (Export)\n3. Both",
   "registration_confirm": "[hi] Please confirm:\nName: {name}\nVillage: {village}\nRole: {role}\nMarket: {market}\n\nReply YES to continue or NO to restart.",
-  "registration_complete": "[hi] Registration complete.\nAgriChain ID: {agr_id}\nWallet balance: ₹{balance}\n\n{name}, you can start using AgriChain now.",
+  "registration_complete": "[hi] Registration complete.\nKrishiBlock ID: {agr_id}\nWallet balance: ₹{balance}\n\n{name}, you can start using KrishiBlock now.",
   "registration_restart": "[hi] Okay, let us restart your registration details.",
   "main_menu_farmer": "[hi] Hello {name}!\n1. Sell Produce\n2. My Listings\n3. Wallet\n4. Transaction History\n5. My Orders",
   "main_menu_buyer": "[hi] Hello {name}!\n1. Browse & Buy\n2. My Purchases\n3. Wallet\n4. Transaction History",
@@ -86,4 +86,5 @@
   "notification_delivery_confirmed": "Delivery confirmed for order {order_id}. ₹{amount} has been released to your wallet.",
   "notification_delivery_recorded": "Delivery for order {order_id} is now confirmed. Escrow of ₹{amount} has been closed."
 }
+
 

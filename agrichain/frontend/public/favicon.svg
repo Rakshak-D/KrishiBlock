@@ -1,0 +1,44 @@
+<svg width="900" height="220" viewBox="0 0 900 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shieldGold" x1="40" y1="30" x2="210" y2="185" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF6B2"/>
+      <stop offset="0.55" stop-color="#E0B94A"/>
+      <stop offset="1" stop-color="#B47A14"/>
+    </linearGradient>
+    <linearGradient id="fieldGreen" x1="45" y1="130" x2="214" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#86C934"/>
+      <stop offset="1" stop-color="#256A1D"/>
+    </linearGradient>
+    <linearGradient id="fieldGold" x1="90" y1="140" x2="194" y2="176" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9D24A"/>
+      <stop offset="1" stop-color="#D38A0E"/>
+    </linearGradient>
+    <linearGradient id="wordGreen" x1="250" y1="40" x2="490" y2="175" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7AAE14"/>
+      <stop offset="1" stop-color="#245B16"/>
+    </linearGradient>
+    <linearGradient id="wordOrange" x1="500" y1="50" x2="760" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DA8A00"/>
+      <stop offset="1" stop-color="#A64D00"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M135 18L226 53V109C226 152 191 188 135 210C79 188 44 152 44 109V53L135 18Z" fill="url(#shieldGold)" stroke="#E0D2A0" stroke-width="6"/>
+  <path d="M66 150C95 126 119 121 142 127C166 133 189 128 213 107V168C183 186 157 196 135 204C108 194 85 182 66 150Z" fill="url(#fieldGreen)"/>
+  <path d="M92 154C118 136 145 137 175 147C161 158 144 171 123 192C111 186 101 180 92 154Z" fill="url(#fieldGold)"/>
+  <path d="M119 29C114 47 110 67 111 90C112 116 109 139 103 161" stroke="#C68400" stroke-width="7" stroke-linecap="round"/>
+  <path d="M115 43L96 63" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M118 52L95 75" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M120 63L97 88" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M122 74L100 101" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M124 85L104 114" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M122 43L141 61" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M124 53L147 73" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M125 64L149 86" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M124 76L146 100" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M121 88L140 112" stroke="#E0A700" stroke-width="5" stroke-linecap="round"/>
+  <path d="M230 164C286 182 364 190 467 186C570 182 681 170 846 176" stroke="#A98606" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+  <path d="M223 177C290 192 381 199 501 196C620 193 721 182 854 185" stroke="#2B6C1F" stroke-width="8" stroke-linecap="round" opacity="0.95"/>
+  <text x="250" y="150" font-family="Segoe UI, Trebuchet MS, sans-serif" font-size="104" font-style="italic" font-weight="800" fill="url(#wordGreen)">Krishi</text>
+  <text x="512" y="150" font-family="Segoe UI, Trebuchet MS, sans-serif" font-size="104" font-style="italic" font-weight="800" fill="url(#wordOrange)">Block</text>
+</svg>

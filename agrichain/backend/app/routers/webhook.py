@@ -14,7 +14,7 @@ from app.utils.serializers import envelope
 
 
 settings = get_settings()
-router = APIRouter(prefix='/api', tags=['webhook'])
+router = APIRouter(tags=['webhook'])
 
 
 def _normalize_phone(value: str) -> str:
@@ -55,8 +55,7 @@ class SimulatedPhoneRequest(BaseModel):
         return _normalize_phone(value)
 
 
-@router.post('/webhook/whatsapp')
-async def whatsapp_webhook(request: Request, db: AsyncSession = Depends(get_db)) -> Response:
+async def _process_whatsapp_webhook(request: Request, db: AsyncSession) -> Response:
     if not await validate_twilio_signature(request):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Invalid Twilio signature.')
 
@@ -77,7 +76,14 @@ async def whatsapp_webhook(request: Request, db: AsyncSession = Depends(get_db))
     return Response(content='', status_code=status.HTTP_200_OK, media_type='text/plain')
 
 
-@router.post('/webhook/simulate')
+@router.post('/')
+@router.post('/webhook/whatsapp')
+@router.post('/api/webhook/whatsapp')
+async def whatsapp_webhook(request: Request, db: AsyncSession = Depends(get_db)) -> Response:
+    return await _process_whatsapp_webhook(request, db)
+
+
+@router.post('/api/webhook/simulate')
 async def simulate_whatsapp_message(payload: SimulatedMessageRequest, db: AsyncSession = Depends(get_db)) -> dict[str, object | None]:
     count = await increment_rate_limit(payload.phone, 'simulate', settings.RATE_LIMIT_WINDOW_SECONDS)
     if count > settings.MESSAGE_RATE_LIMIT:
@@ -89,13 +95,12 @@ async def simulate_whatsapp_message(payload: SimulatedMessageRequest, db: AsyncS
     return envelope({'response': result['response'], 'media_url': result.get('media_url'), 'state': result['state']})
 
 
-@router.post('/webhook/simulate/reset')
+@router.post('/api/webhook/simulate/reset')
 async def reset_simulated_session(payload: SimulatedPhoneRequest) -> dict[str, object | None]:
     await clear_session(payload.phone)
     return envelope({'message': 'Conversation session cleared.'})
 
 
-@router.get('/health')
+@router.get('/api/health')
 async def health() -> dict[str, object | None]:
     return envelope({'status': 'ok'})
-

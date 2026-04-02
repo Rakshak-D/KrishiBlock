@@ -1,1 +1,1 @@
-"""Utility helpers for AgriChain."""
+"""Utility helpers for KrishiBlock."""

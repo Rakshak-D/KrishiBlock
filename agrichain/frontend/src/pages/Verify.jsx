@@ -15,7 +15,7 @@ export default function Verify() {
   });
 
   if (verifyQuery.isLoading) {
-    return <section className="verify-page"><div className="verify-card">Checking traceability…</div></section>;
+    return <section className="verify-page"><div className="verify-card">Checking traceability...</div></section>;
   }
 
   if (verifyQuery.isError || !verifyQuery.data) {
@@ -35,7 +35,7 @@ export default function Verify() {
         <div className="verify-copy">
           <p className="eyebrow">Public verification record</p>
           <h1>{labelize(data.crop_name)} from {data.farmer.name}</h1>
-          <p>{data.farmer.village || "Origin shared by AgriChain"}</p>
+          <p>{data.farmer.village || "Origin shared by KrishiBlock"}</p>
           <div className={`verified-pill ${data.blockchain_verified ? "verified-good" : "verified-warn"}`}>
             {data.blockchain_verified ? <ShieldCheck size={16} /> : <ShieldX size={16} />}
             {data.blockchain_verified ? "Hash-chain verification passed" : "Traceability needs review"}

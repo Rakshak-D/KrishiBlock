@@ -4,8 +4,8 @@ import { displayText } from "../../lib/formatters";
 export default function WorkspaceHero({ isFarmer, overview, onCreateListing, onOpenLedger }) {
   const title = isFarmer ? "Farmer workspace" : "Buyer workspace";
   const subtitle = isFarmer
-    ? "Manage live listings, dispatch orders, and track payouts from one place."
-    : "Track orders, delivery status, wallet balance, and trust proof from one place.";
+    ? "Manage live listings, dispatch orders, and track payouts from one clear control surface."
+    : "Track orders, delivery status, wallet balance, and trust proof from one clear control surface.";
 
   return (
     <section className="detail-card compact-panel workspace-header-card">
@@ -14,10 +14,21 @@ export default function WorkspaceHero({ isFarmer, overview, onCreateListing, onO
           <p className="eyebrow">{title}</p>
           <h1>Welcome back, {displayText(overview.profile.name)}.</h1>
           <p>{subtitle}</p>
+          <div className="badge-row top-gap">
+            <span className="chip chip-soft">{displayText(overview.profile.user_type_label)}</span>
+            <span className="chip chip-soft">{displayText(overview.profile.market_label)}</span>
+            <span className="chip chip-soft">Wallet {displayText(overview.wallet.balance_display)}</span>
+          </div>
         </div>
-        <div className="button-row">
-          {isFarmer ? <button className="primary-button" onClick={onCreateListing} type="button">Create listing</button> : null}
-          <button className="ghost-button" onClick={onOpenLedger} type="button">Open ledger</button>
+        <div className="workspace-actions">
+          {isFarmer ? (
+            <button className="primary-button" onClick={onCreateListing} type="button">
+              Create listing
+            </button>
+          ) : null}
+          <button className="ghost-button" onClick={onOpenLedger} type="button">
+            Open ledger
+          </button>
         </div>
       </div>
       <div className="hero-stats-grid top-gap">

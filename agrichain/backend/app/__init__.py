@@ -1,1 +1,1 @@
-"""AgriChain backend application package."""
+"""KrishiBlock backend application package."""

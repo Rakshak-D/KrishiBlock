@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const RETRYABLE_METHODS = new Set(["get", "head"]);
-export const STORAGE_KEY = "agrichain-auth";
+export const STORAGE_KEY = "krishiblock-auth";
 export const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 export const ASSET_BASE_URL = API_BASE_URL.replace(/\/api\/?$/, "") || "";
 

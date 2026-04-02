@@ -33,7 +33,11 @@ export default function WorkspaceOperationsTab({
             <p className="eyebrow">{isFarmer ? "Operations" : "Orders"}</p>
             <h2>{isFarmer ? "Listings and fulfilment" : "Current buyer orders"}</h2>
           </div>
-          {!isFarmer ? <Link className="ghost-button" to="/market">Browse marketplace</Link> : null}
+          {isFarmer ? (
+            <button className="primary-button" onClick={onOpenCreateListing} type="button">New listing</button>
+          ) : (
+            <Link className="ghost-button" to="/market">Browse marketplace</Link>
+          )}
         </div>
 
         {isFarmer ? (
@@ -43,23 +47,23 @@ export default function WorkspaceOperationsTab({
                 <div className="form-grid two-col-grid">
                   <label className="field-stack" htmlFor="listing-crop">
                     Crop
-                    <select id="listing-crop" name="crop_name" value={listingForm.crop_name} onChange={(event) => setListingForm((current) => ({ ...current, crop_name: event.target.value }))}>
+                    <select id="listing-crop" name="crop_name" onChange={(event) => setListingForm((current) => ({ ...current, crop_name: event.target.value }))} value={listingForm.crop_name}>
                       {["tomato", "potato", "onion", "ginger", "carrot", "cabbage", "cauliflower", "brinjal", "beans", "peas", "rice", "wheat"].map((crop) => <option key={crop} value={crop}>{crop.replaceAll("_", " ")}</option>)}
                     </select>
                   </label>
                   <label className="field-stack" htmlFor="listing-quantity-input">
                     Quantity (kg)
-                    <input id="listing-quantity-input" inputMode="decimal" min="0.1" name="quantity_kg" onChange={(event) => setListingForm((current) => ({ ...current, quantity_kg: event.target.value }))} placeholder="50…" step="0.01" type="number" value={listingForm.quantity_kg} />
+                    <input id="listing-quantity-input" inputMode="decimal" min="0.1" name="quantity_kg" onChange={(event) => setListingForm((current) => ({ ...current, quantity_kg: event.target.value }))} placeholder="50" step="0.01" type="number" value={listingForm.quantity_kg} />
                     {listingQuantityError ? <small className="field-error">{listingQuantityError}</small> : null}
                   </label>
                   <label className="field-stack" htmlFor="listing-price-input">
                     Ask price in INR
-                    <input id="listing-price-input" inputMode="decimal" min="0.1" name="price_per_kg" onChange={(event) => setListingForm((current) => ({ ...current, price_per_kg: event.target.value }))} placeholder="22…" step="0.01" type="number" value={listingForm.price_per_kg} />
+                    <input id="listing-price-input" inputMode="decimal" min="0.1" name="price_per_kg" onChange={(event) => setListingForm((current) => ({ ...current, price_per_kg: event.target.value }))} placeholder="22" step="0.01" type="number" value={listingForm.price_per_kg} />
                     {listingPriceError ? <small className="field-error">{listingPriceError}</small> : null}
                   </label>
                   <label className="field-stack" htmlFor="listing-pickup-type">
                     Pickup method
-                    <select id="listing-pickup-type" name="pickup_type" value={listingForm.pickup_type} onChange={(event) => setListingForm((current) => ({ ...current, pickup_type: event.target.value }))}>
+                    <select id="listing-pickup-type" name="pickup_type" onChange={(event) => setListingForm((current) => ({ ...current, pickup_type: event.target.value }))} value={listingForm.pickup_type}>
                       <option value="at_farm">At farm</option>
                       <option value="nearest_mandi">Nearest mandi</option>
                       <option value="farmer_delivers">Farmer delivers</option>
@@ -68,7 +72,7 @@ export default function WorkspaceOperationsTab({
                   {overview.profile.market_type === "both" ? (
                     <label className="field-stack" htmlFor="listing-market-type">
                       Market
-                      <select id="listing-market-type" name="market_type" value={listingForm.market_type} onChange={(event) => setListingForm((current) => ({ ...current, market_type: event.target.value }))}>
+                      <select id="listing-market-type" name="market_type" onChange={(event) => setListingForm((current) => ({ ...current, market_type: event.target.value }))} value={listingForm.market_type}>
                         <option value="local">Local</option>
                         <option value="global">Global</option>
                       </select>
@@ -76,7 +80,7 @@ export default function WorkspaceOperationsTab({
                   ) : null}
                   <label className="field-stack" htmlFor="listing-gi-tag">
                     GI tag
-                    <input autoComplete="off" id="listing-gi-tag" name="gi_tag" onChange={(event) => setListingForm((current) => ({ ...current, gi_tag: event.target.value }))} placeholder="Optional GI tag…" value={listingForm.gi_tag} />
+                    <input autoComplete="off" id="listing-gi-tag" name="gi_tag" onChange={(event) => setListingForm((current) => ({ ...current, gi_tag: event.target.value }))} placeholder="Optional GI tag" value={listingForm.gi_tag} />
                   </label>
                 </div>
                 <label className="checkbox-row">
@@ -90,7 +94,7 @@ export default function WorkspaceOperationsTab({
                 ) : null}
                 <div className="button-row">
                   <button className="primary-button" disabled={submitting || Boolean(listingQuantityError || listingPriceError)} onClick={onSubmitListing} type="button">
-                    {submitting ? "Saving…" : editingListingId ? "Save listing" : "Publish listing"}
+                    {submitting ? "Saving..." : editingListingId ? "Save listing" : "Publish listing"}
                   </button>
                   <button className="ghost-button" onClick={onResetListingForm} type="button">Cancel</button>
                 </div>

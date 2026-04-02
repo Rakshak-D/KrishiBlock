@@ -27,7 +27,7 @@ async def request_otp(phone: str) -> dict[str, object]:
     )
     delivered = await whatsapp_service.send_message(
         to=phone,
-        body=f'Your AgriChain login OTP is {otp}. It will expire in 10 minutes.',
+        body=f'Your KrishiBlock login OTP is {otp}. It will expire in 10 minutes.',
     )
     return {'delivered': delivered, 'otp': otp if settings.is_development else None}
 

@@ -97,7 +97,7 @@ async def public_ledger(
         reference_listing = listings_by_id.get(transaction.reference_id or '')
         reference_order = orders_by_id.get(transaction.reference_id or '')
         linked_listing = reference_listing or (reference_order.listing if reference_order is not None else None)
-        actor_name = transaction.user.name if transaction.user is not None else 'AgriChain'
+        actor_name = transaction.user.name if transaction.user is not None else 'KrishiBlock'
         blocks.append(
             {
                 'block_number': transaction.block_height,

@@ -9,15 +9,15 @@ export default function WorkspaceAccountTab({ overview, profileForm, setProfileF
         <div className="form-grid two-col-grid top-gap">
           <label className="field-stack" htmlFor="profile-name">
             Full name
-            <input autoComplete="name" id="profile-name" name="name" value={profileForm.name} onChange={(event) => setProfileForm((current) => ({ ...current, name: event.target.value }))} />
+            <input autoComplete="name" id="profile-name" name="name" onChange={(event) => setProfileForm((current) => ({ ...current, name: event.target.value }))} value={profileForm.name} />
           </label>
           <label className="field-stack" htmlFor="profile-village">
             Village or city
-            <input autoComplete="address-level2" id="profile-village" name="village" value={profileForm.village} onChange={(event) => setProfileForm((current) => ({ ...current, village: event.target.value }))} />
+            <input autoComplete="address-level2" id="profile-village" name="village" onChange={(event) => setProfileForm((current) => ({ ...current, village: event.target.value }))} value={profileForm.village} />
           </label>
           <label className="field-stack" htmlFor="profile-language">
             Language
-            <select id="profile-language" name="language" value={profileForm.language} onChange={(event) => setProfileForm((current) => ({ ...current, language: event.target.value }))}>
+            <select id="profile-language" name="language" onChange={(event) => setProfileForm((current) => ({ ...current, language: event.target.value }))} value={profileForm.language}>
               <option value="en">English</option>
               <option value="hi">Hindi</option>
               <option value="kn">Kannada</option>
@@ -39,12 +39,16 @@ export default function WorkspaceAccountTab({ overview, profileForm, setProfileF
           <p className="eyebrow">Account identity</p>
           <h3>{overview.profile.user_type_label} account</h3>
         </div>
+        <div className="hero-stats-grid top-gap">
+          <div className="summary-card"><span>Phone</span><strong>{overview.profile.phone}</strong></div>
+          <div className="summary-card"><span>KrishiBlock ID</span><strong>{overview.profile.id}</strong></div>
+          <div className="summary-card"><span>Reputation</span><strong>{overview.profile.reputation_score}</strong></div>
+          <div className="summary-card"><span>Member since</span><strong>{overview.profile.created_at_display}</strong></div>
+        </div>
         <div className="info-list top-gap">
-          <div className="info-row">Phone: {overview.profile.phone}</div>
-          <div className="info-row">AgriChain ID: {overview.profile.id}</div>
           <div className="info-row">Wallet address: <span className="hash-block">{overview.profile.wallet_address || "Not issued yet"}</span></div>
-          <div className="info-row">Reputation score: {overview.profile.reputation_score}</div>
-          <div className="info-row">Member since: {overview.profile.created_at_display}</div>
+          <div className="info-row">User role: {overview.profile.user_type_label}</div>
+          <div className="info-row">Market access: {overview.profile.market_label}</div>
         </div>
       </section>
     </div>

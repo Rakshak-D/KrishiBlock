@@ -5,7 +5,7 @@ import { cropMedia, formatCurrency, labelize, relativeFreshness } from "../lib/f
 export default function ListingCard({ listing }) {
   return (
     <article className="listing-card listing-card-compact">
-      <img alt={listing.crop_label || listing.crop_name} className="listing-thumb" height="120" src={cropMedia(listing.crop_name)} width="120" />
+      <img alt={listing.crop_label || listing.crop_name} className="listing-thumb" src={cropMedia(listing.crop_name)} />
       <div className="listing-copy">
         <div className="list-row-top">
           <div>
@@ -14,12 +14,28 @@ export default function ListingCard({ listing }) {
           </div>
           <span className="chip chip-soft">{labelize(listing.status)}</span>
         </div>
-        <p className="muted-row"><MapPin size={14} /> {listing.village || "Verified origin"} · {listing.farmer_name}</p>
+        <p className="muted-row">
+          <MapPin size={14} /> {listing.village || "Verified origin"} · {listing.farmer_name}
+        </p>
+        <div className="listing-price-band">
+          <div>
+            <span className="eyebrow">Price</span>
+            <strong>{formatCurrency(listing.price_per_kg, listing.currency || "INR")}</strong>
+          </div>
+          <div>
+            <span className="eyebrow">Available</span>
+            <strong>{listing.quantity_remaining} kg</strong>
+          </div>
+        </div>
         <div className="listing-data-grid">
-          <div><span>Price</span><strong>{formatCurrency(listing.price_per_kg, listing.currency || "INR")}</strong></div>
-          <div><span>Available</span><strong>{listing.quantity_remaining} kg</strong></div>
-          <div><span>Freshness</span><strong>{relativeFreshness(listing.created_at)}</strong></div>
-          <div><span>Trust</span><strong>{listing.organic_certified ? "Organic" : listing.gi_tag || "Verified"}</strong></div>
+          <div>
+            <span>Freshness</span>
+            <strong>{relativeFreshness(listing.created_at)}</strong>
+          </div>
+          <div>
+            <span>Trust</span>
+            <strong>{listing.organic_certified ? "Organic" : listing.gi_tag || "Verified"}</strong>
+          </div>
         </div>
         <div className="button-row">
           <Link className="primary-button" to={`/listing/${listing.id}`}>

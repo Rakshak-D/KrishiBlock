@@ -3,14 +3,16 @@ import { CheckCircle2, MessageSquareText, ShieldCheck, WalletCards } from "lucid
 export default function AccessIntro({ stats }) {
   return (
     <div className="auth-card auth-copy-card auth-copy-card-rich">
-      <p className="eyebrow">AgriChain access</p>
-      <h1>Create one account and use it across marketplace, escrow, wallet, verification, and WhatsApp flows.</h1>
-      <p>Registration and sign-in now happen directly in AgriChain, with the same identity carrying through the web app and conversation channel.</p>
+      <p className="eyebrow">KrishiBlock access</p>
+      <h1>One identity for marketplace, escrow, wallet, verification, and WhatsApp flows.</h1>
+      <p>
+        Register once, sign in with OTP when you return, and keep the same account across the web workspace and conversation channel.
+      </p>
       <div className="info-list auth-checklist">
-        <div className="info-row"><CheckCircle2 size={16} /> Account setup creates the profile, wallet, and blockchain wallet address in one pass.</div>
-        <div className="info-row"><WalletCards size={16} /> Wallet, escrow, dispatch, and payouts stay tied to the same account.</div>
-        <div className="info-row"><MessageSquareText size={16} /> The browser console can drive the same conversation engine used by WhatsApp.</div>
-        <div className="info-row"><ShieldCheck size={16} /> Public verification remains visible before sign-in.</div>
+        <div className="info-row"><CheckCircle2 size={16} /> Account setup creates the profile, wallet, and blockchain identity together.</div>
+        <div className="info-row"><WalletCards size={16} /> Wallet, escrow, dispatch, and payout history stay tied to the same account.</div>
+        <div className="info-row"><MessageSquareText size={16} /> The browser simulator mirrors the same conversation engine used for WhatsApp.</div>
+        <div className="info-row"><ShieldCheck size={16} /> Public verification remains available even before sign-in.</div>
       </div>
       <div className="hero-stats-grid top-gap">
         <div className="summary-card"><span>Listings live</span><strong>{stats.totalListings}</strong></div>

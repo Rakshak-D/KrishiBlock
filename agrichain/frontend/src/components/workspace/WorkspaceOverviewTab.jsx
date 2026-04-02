@@ -7,16 +7,19 @@ export default function WorkspaceOverviewTab({ overview, onOpenLedger }) {
   return (
     <div className="dashboard-grid dashboard-grid-wide">
       <section className="detail-card compact-panel">
-        <div className="section-title">
-          <p className="eyebrow">Next best actions</p>
-          <h3>Keep the flow moving</h3>
+        <div className="section-header">
+          <div>
+            <p className="eyebrow">Next best actions</p>
+            <h2>Keep the flow moving</h2>
+          </div>
+          <button className="ghost-button" onClick={onOpenLedger} type="button">View trust ledger</button>
         </div>
         <div className="stack-list top-gap">
           {overview.profile.user_type === "farmer" ? (
             <>
               <div className="list-row list-row-stacked"><strong>Publish or update a listing</strong><p>Fresh listings keep your crop visible in the marketplace and on the public verify page.</p></div>
               <div className="list-row list-row-stacked"><strong>Dispatch escrow-locked orders</strong><p>Mark an order as dispatched so the buyer can confirm delivery without confusion.</p></div>
-              <div className="list-row list-row-stacked"><strong>Open the trust ledger</strong><p>Use the ledger tab when you need a quick audit trail for escrow and blockchain verification.</p></div>
+              <div className="list-row list-row-stacked"><strong>Watch pricing guidance</strong><p>Use the price reference below to stay close to the live mandi and market range.</p></div>
             </>
           ) : (
             <>
@@ -27,8 +30,8 @@ export default function WorkspaceOverviewTab({ overview, onOpenLedger }) {
           )}
         </div>
         <div className="button-row top-gap">
-          <button className="primary-button" onClick={onOpenLedger} type="button">View trust ledger</button>
-          <Link className="ghost-button" to={overview.profile.user_type === "farmer" ? "/market" : "/market"}>Open marketplace</Link>
+          <Link className="primary-button" to="/market">Open marketplace</Link>
+          <button className="ghost-button" onClick={onOpenLedger} type="button">Open ledger</button>
         </div>
       </section>
 
@@ -45,7 +48,7 @@ export default function WorkspaceOverviewTab({ overview, onOpenLedger }) {
             <MetricCard label="Suggested max" value={overview.price_guidance.recommended_max_display} />
           </div>
         ) : (
-          <SectionEmpty title="No focus crop yet" body="Create or order a crop first and AgriChain will surface pricing guidance here." />
+          <SectionEmpty title="No focus crop yet" body="Create or order a crop first and KrishiBlock will surface pricing guidance here." />
         )}
       </section>
 
@@ -53,4 +56,3 @@ export default function WorkspaceOverviewTab({ overview, onOpenLedger }) {
     </div>
   );
 }
-

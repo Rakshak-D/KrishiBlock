@@ -104,7 +104,7 @@ async def request_otp_route(payload: OTPRequest, db: AsyncSession = Depends(get_
     result = await db.execute(select(User).where(User.phone == payload.phone))
     user = result.scalar_one_or_none()
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No AgriChain account was found for this phone number. Please create one first.')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No KrishiBlock account was found for this phone number. Please create one first.')
 
     otp_result = await request_otp(payload.phone)
     response = {'message': 'OTP sent successfully.'}

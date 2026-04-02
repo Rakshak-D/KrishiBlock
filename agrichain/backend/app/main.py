@@ -47,7 +47,7 @@ async def lifespan(_app: FastAPI):
     await close_db()
 
 
-app = FastAPI(title='AgriChain API', version='1.0.0', lifespan=lifespan)
+app = FastAPI(title='KrishiBlock API', version='1.0.0', lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.allowed_origins,

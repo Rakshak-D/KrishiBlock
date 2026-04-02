@@ -15,7 +15,7 @@ const useAuthStore = create(
       logout: () => set({ token: null, user: null, isAuthenticated: false }),
     }),
     {
-      name: "agrichain-auth",
+      name: "krishiblock-auth",
       partialize: (state) => ({ token: state.token, user: state.user, isAuthenticated: state.isAuthenticated }),
     },
   ),

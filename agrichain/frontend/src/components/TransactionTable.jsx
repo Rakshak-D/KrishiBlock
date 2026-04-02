@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ArrowUpDown } from "lucide-react";
 import { formatCurrency, formatDateTime, labelize } from "../lib/formatters";
 
 const TYPE_COLORS = {
@@ -16,6 +17,11 @@ const TYPE_COLORS = {
 
 const POSITIVE_TYPES = new Set(["credit", "escrow_release", "welcome_bonus"]);
 const NEUTRAL_TYPES = new Set(["listing_anchor", "order_dispatch", "delivery_confirmation", "withdrawal_request"]);
+
+function shortenReference(value) {
+  const text = String(value || "-");
+  return text.length > 18 ? `${text.slice(0, 8)}...${text.slice(-6)}` : text;
+}
 
 export default function TransactionTable({ transactions = [] }) {
   const [direction, setDirection] = useState("desc");
@@ -39,40 +45,55 @@ export default function TransactionTable({ transactions = [] }) {
   }
 
   return (
-    <div className="table-shell">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">
-              <button className="table-sort" onClick={() => setDirection((current) => (current === "desc" ? "asc" : "desc"))} type="button">
-                Block / Date {direction === "desc" ? "↓" : "↑"}
-              </button>
-            </th>
-            <th scope="col">Type</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Balance after</th>
-            <th scope="col">Reference</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedTransactions.map((transaction) => {
-            const isPositive = POSITIVE_TYPES.has(transaction.type);
-            const isNeutral = NEUTRAL_TYPES.has(transaction.type);
-            const amountDisplay = isNeutral
-              ? formatCurrency(0)
-              : `${isPositive ? "+" : "-"}${formatCurrency(transaction.amount)}`;
-            return (
-              <tr key={transaction.id}>
-                <td>{transaction.block_height ? `#${transaction.block_height} · ` : ""}{formatDateTime(transaction.created_at)}</td>
-                <td><span className={`table-badge ${TYPE_COLORS[transaction.type] || "badge-fee"}`}>{labelize(transaction.type)}</span></td>
-                <td className={isNeutral ? "" : isPositive ? "amount-positive" : "amount-negative"}>{amountDisplay}</td>
-                <td>{formatCurrency(transaction.balance_after)}</td>
-                <td>{transaction.reference_id || "-"}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <div className="stack-list">
+      <div className="table-toolbar">
+        <div>
+          <p className="eyebrow">Wallet ledger</p>
+          <h3>Recent transactions</h3>
+        </div>
+        <button className="ghost-button slim-button" onClick={() => setDirection((current) => (current === "desc" ? "asc" : "desc"))} type="button">
+          <ArrowUpDown size={15} /> {direction === "desc" ? "Newest first" : "Oldest first"}
+        </button>
+      </div>
+
+      <div className="table-shell table-shell-transactions">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Event</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Balance after</th>
+              <th scope="col">Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedTransactions.map((transaction) => {
+              const isPositive = POSITIVE_TYPES.has(transaction.type);
+              const isNeutral = NEUTRAL_TYPES.has(transaction.type);
+              const amountDisplay = isNeutral
+                ? formatCurrency(0)
+                : `${isPositive ? "+" : "-"}${formatCurrency(transaction.amount)}`;
+              return (
+                <tr key={transaction.id}>
+                  <td data-label="Time">
+                    <strong>{formatDateTime(transaction.created_at)}</strong>
+                    <span className="table-meta">{transaction.block_height ? `Block #${transaction.block_height}` : "Pending block assignment"}</span>
+                  </td>
+                  <td data-label="Event">
+                    <span className={`table-badge ${TYPE_COLORS[transaction.type] || "badge-fee"}`}>{labelize(transaction.type)}</span>
+                  </td>
+                  <td className={isNeutral ? "" : isPositive ? "amount-positive" : "amount-negative"} data-label="Amount">
+                    {amountDisplay}
+                  </td>
+                  <td data-label="Balance after">{formatCurrency(transaction.balance_after)}</td>
+                  <td className="transaction-reference" data-label="Reference">{shortenReference(transaction.reference_id)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

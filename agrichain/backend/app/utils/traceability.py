@@ -152,7 +152,7 @@ def build_transaction_trail(listing: Listing, transactions: Iterable[Transaction
     current_height = max((int(tx.block_height or 0) for tx in transactions), default=0)
     trail: list[dict[str, object | None]] = []
     for tx in transactions:
-        actor = 'AgriChain ledger'
+        actor = 'KrishiBlock ledger'
         if tx.user_id == listing.farmer_id:
             actor = listing.farmer.name if listing.farmer else 'Farmer wallet'
         elif tx.user_id in order_buyer_ids:

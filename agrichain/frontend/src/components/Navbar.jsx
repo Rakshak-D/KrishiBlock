@@ -1,6 +1,13 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { DatabaseZap, LogOut, ShieldCheck, Sprout } from "lucide-react";
+import { DatabaseZap, LogOut, MessageCircleMore, ShieldCheck } from "lucide-react";
 import useAuthStore from "../store/authStore";
+
+const NAV_ITEMS = [
+  { to: "/", label: "Home", end: true },
+  { to: "/market", label: "Marketplace" },
+  { to: "/ledger", label: "Ledger" },
+  { to: "/bot", label: "WhatsApp sim" },
+];
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -15,30 +22,34 @@ export default function Navbar() {
   return (
     <header className="shell-nav shell-nav-clean">
       <Link className="brand" to="/">
-        <span className="brand-mark">
-          <Sprout size={18} />
-        </span>
+        <img alt="KrishiBlock logo" className="brand-logo" src="/krishiblock-logo.svg" />
         <span>
-          <strong>AgriChain</strong>
-          <small>Trade, escrow, verify, and trust ledger</small>
+          <strong>KrishiBlock</strong>
+          <small>Verified agri-trade, escrow, ledger, and WhatsApp workflows</small>
         </span>
       </Link>
 
-      <nav className="nav-links">
-        <NavLink to="/">Home</NavLink>
-        <NavLink to="/market">Marketplace</NavLink>
-        <NavLink to="/ledger">Trust ledger</NavLink>
-        <NavLink to="/bot">Console</NavLink>
-        {user ? <NavLink to="/dashboard">Workspace</NavLink> : <NavLink to="/login">Sign in</NavLink>}
+      <nav aria-label="Primary" className="nav-links">
+        {NAV_ITEMS.map((item) => (
+          <NavLink end={item.end} key={item.to} to={item.to}>
+            {item.label}
+          </NavLink>
+        ))}
+        <NavLink to={user ? "/dashboard" : "/login"}>{user ? "Workspace" : "Sign in"}</NavLink>
       </nav>
 
       <div className="nav-meta">
-        <span className="chip chip-soft mobile-hide">
-          <ShieldCheck size={15} /> Public verify
-        </span>
-        <span className="chip chip-soft mobile-hide">
-          <DatabaseZap size={15} /> Chain explorer
-        </span>
+        <div className="nav-statuses mobile-hide">
+          <span className="chip chip-soft">
+            <ShieldCheck size={15} /> Public verify
+          </span>
+          <span className="chip chip-soft">
+            <DatabaseZap size={15} /> Live chain
+          </span>
+          <span className="chip chip-soft">
+            <MessageCircleMore size={15} /> WhatsApp ready
+          </span>
+        </div>
         {user ? (
           <div className="profile-chip">
             <button className="ghost-button slim-button" onClick={() => navigate("/dashboard")} type="button">
@@ -48,9 +59,12 @@ export default function Navbar() {
               <LogOut size={15} />
             </button>
           </div>
-        ) : null}
+        ) : (
+          <button className="primary-button" onClick={() => navigate("/login")} type="button">
+            Open workspace
+          </button>
+        )}
       </div>
     </header>
   );
 }
-
