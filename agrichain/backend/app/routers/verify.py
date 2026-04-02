@@ -30,7 +30,7 @@ async def verify_listing(listing_id: str, db: AsyncSession = Depends(get_db)) ->
 
     reference_ids = [listing.id, *[order.id for order in listing.orders]]
     transaction_result = await db.execute(
-        select(Transaction).where(Transaction.reference_id.in_(reference_ids)).order_by(Transaction.created_at.asc(), Transaction.id.asc())
+        select(Transaction).where(Transaction.reference_id.in_(reference_ids)).order_by(Transaction.block_height.asc().nulls_last(), Transaction.created_at.asc(), Transaction.id.asc())
     )
     transactions = transaction_result.scalars().all()
     transparency = build_transparency_payload(listing, transactions)
@@ -71,3 +71,4 @@ async def verify_listing(listing_id: str, db: AsyncSession = Depends(get_db)) ->
             'dpp': build_dpp(listing, listing.farmer, list(listing.orders)) if listing.market_type == ListingMarketType.GLOBAL else None,
         }
     )
+

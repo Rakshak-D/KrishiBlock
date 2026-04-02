@@ -45,6 +45,8 @@ class Settings(BaseSettings):
     WELCOME_BONUS_AMOUNT: Decimal = Field(default=Decimal('100.00'))
     USD_EXCHANGE_RATE: Decimal = Field(default=Decimal('84.00'))
 
+    BLOCKCHAIN_DIFFICULTY: int = 3
+
     JWT_EXPIRE_MINUTES: int = 1440
     OTP_EXPIRY_SECONDS: int = 600
     OTP_MAX_ATTEMPTS: int = 3

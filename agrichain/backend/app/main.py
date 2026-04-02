@@ -4,6 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -82,6 +83,13 @@ async def http_exception_handler(_request: Request, exc: HTTPException) -> JSONR
     return JSONResponse(status_code=exc.status_code, content=envelope(None, str(exc.detail), success=False))
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(_request: Request, exc: RequestValidationError) -> JSONResponse:
+    first_error = exc.errors()[0] if exc.errors() else {}
+    message = str(first_error.get('msg') or 'Invalid request payload.')
+    return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=envelope(None, message, success=False))
+
+
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     logger.exception('Unhandled exception for %s %s: %s', request.method, request.url.path, exc)
@@ -95,4 +103,4 @@ app.include_router(verify.router)
 app.include_router(dashboard.router)
 app.include_router(wallet.router)
 app.include_router(orders.router)
-
+app.include_router(ledger.router)

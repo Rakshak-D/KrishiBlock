@@ -21,6 +21,26 @@ function readStoredToken() {
   return readStoredAuth()?.token || null;
 }
 
+function normalizeErrorMessage(detail) {
+  if (!detail) return "Something went wrong.";
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    const first = detail[0];
+    if (typeof first === "string") return first;
+    if (first?.msg) return String(first.msg);
+    return "Request validation failed.";
+  }
+  if (typeof detail === "object") {
+    if (detail.msg) return String(detail.msg);
+    try {
+      return JSON.stringify(detail);
+    } catch {
+      return "Something went wrong.";
+    }
+  }
+  return String(detail);
+}
+
 export function resolveAssetUrl(assetPath) {
   if (!assetPath) return null;
   if (assetPath.startsWith("http")) return assetPath;
@@ -44,7 +64,7 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => {
     if (response.data && typeof response.data === "object" && response.data.success === false) {
-      const error = new Error(response.data.error || "Request failed.");
+      const error = new Error(normalizeErrorMessage(response.data.error));
       error.response = response;
       throw error;
     }
@@ -69,11 +89,9 @@ api.interceptors.response.use(
       }
     }
 
-    const message =
-      error.response?.data?.error ||
-      error.response?.data?.detail ||
-      error.message ||
-      "Something went wrong.";
+    const message = normalizeErrorMessage(
+      error.response?.data?.error || error.response?.data?.detail || error.message,
+    );
 
     if (!config.__silenceToast) {
       toast.error(message);
@@ -99,6 +117,7 @@ export const agrichainApi = {
   listingDetail: (id) => unwrap(api.get(`/listings/${id}`)),
   buyListing: (id, payload) => unwrap(api.post(`/listings/${id}/buy`, payload)),
   verifyListing: (id) => unwrap(api.get(`/verify/${id}`)),
+  publicLedger: (params = {}) => unwrap(api.get("/ledger", { params })),
   dashboardOverview: () => unwrap(api.get("/dashboard/overview")),
   profile: () => unwrap(api.get("/dashboard/profile")),
   updateProfile: (payload) => unwrap(api.patch("/dashboard/profile", payload)),
@@ -119,4 +138,3 @@ export const agrichainApi = {
 };
 
 export default api;
-

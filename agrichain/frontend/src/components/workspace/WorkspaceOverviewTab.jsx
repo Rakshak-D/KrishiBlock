@@ -16,7 +16,7 @@ export default function WorkspaceOverviewTab({ overview, onOpenLedger }) {
             <>
               <div className="list-row list-row-stacked"><strong>Publish or update a listing</strong><p>Fresh listings keep your crop visible in the marketplace and on the public verify page.</p></div>
               <div className="list-row list-row-stacked"><strong>Dispatch escrow-locked orders</strong><p>Mark an order as dispatched so the buyer can confirm delivery without confusion.</p></div>
-              <div className="list-row list-row-stacked"><strong>Open the trust ledger</strong><p>Use the ledger tab when you need to show judges or buyers how escrow and blockchain verification connect.</p></div>
+              <div className="list-row list-row-stacked"><strong>Open the trust ledger</strong><p>Use the ledger tab when you need a quick audit trail for escrow and blockchain verification.</p></div>
             </>
           ) : (
             <>
@@ -53,3 +53,4 @@ export default function WorkspaceOverviewTab({ overview, onOpenLedger }) {
     </div>
   );
 }
+

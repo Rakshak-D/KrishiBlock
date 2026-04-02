@@ -28,7 +28,7 @@ export default function Navbar() {
         <NavLink to="/">Home</NavLink>
         <NavLink to="/market">Marketplace</NavLink>
         <NavLink to="/ledger">Trust ledger</NavLink>
-        <NavLink to="/bot">Bot lab</NavLink>
+        <NavLink to="/bot">Console</NavLink>
         {user ? <NavLink to="/dashboard">Workspace</NavLink> : <NavLink to="/login">Sign in</NavLink>}
       </nav>
 
@@ -37,7 +37,7 @@ export default function Navbar() {
           <ShieldCheck size={15} /> Public verify
         </span>
         <span className="chip chip-soft mobile-hide">
-          <DatabaseZap size={15} /> Blockchain ledger
+          <DatabaseZap size={15} /> Chain explorer
         </span>
         {user ? (
           <div className="profile-chip">
@@ -53,3 +53,4 @@ export default function Navbar() {
     </header>
   );
 }
+

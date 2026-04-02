@@ -49,7 +49,7 @@ export default function BotConsole() {
     try {
       await agrichainApi.resetSimulatedSession({ phone: phone.trim() });
       setMessages([]);
-      toast.success("Simulator session reset.");
+      toast.success("Conversation session reset.");
     } finally {
       setResetting(false);
     }
@@ -60,8 +60,8 @@ export default function BotConsole() {
       <section className="hero-panel hero-marketplace compact-panel">
         <div className="hero-copy hero-copy-tight">
           <p className="eyebrow">Bot operations lab</p>
-          <h1>Test registration, wallet, buy, sell, and delivery flows without needing live WhatsApp delivery.</h1>
-          <p>The simulator still runs the same conversation engine. It’s now styled and positioned like part of the same product instead of a separate prototype screen.</p>
+          <h1>Run registration, wallet, buy, sell, and delivery flows from the browser conversation console.</h1>
+          <p>This console uses the same conversation engine and session flow as the WhatsApp channel.</p>
           <div className="hero-stats-grid top-gap">
             <div className="summary-card"><span>Same engine</span><strong>Conversation graph</strong></div>
             <div className="summary-card"><span>Wallet actions</span><strong>Top-up and release</strong></div>
@@ -98,12 +98,12 @@ export default function BotConsole() {
       <div className="dashboard-grid bot-layout">
         <section className="detail-card compact-panel">
           <div className="section-title">
-            <p className="eyebrow">Suggested journeys</p>
+            <p className="eyebrow">Suggested sequences</p>
             <h3>Run full flows quickly</h3>
           </div>
           <div className="stack-list top-gap">
-            <div className="list-row list-row-stacked"><strong>Farmer onboarding to listing</strong><p>HI, registration, market choice, sell flow, quantity, price, publish.</p></div>
-            <div className="list-row list-row-stacked"><strong>Buyer order path</strong><p>Register a buyer phone, browse, place an order, then track the release-key confirmation flow.</p></div>
+            <div className="list-row list-row-stacked"><strong>Farmer listing path</strong><p>HI, registration, market choice, sell flow, quantity, price, publish.</p></div>
+            <div className="list-row list-row-stacked"><strong>Buyer order path</strong><p>Register a buyer phone, browse, place an order, and confirm delivery after dispatch.</p></div>
             <div className="list-row list-row-stacked"><strong>Wallet support flow</strong><p>Top up, withdraw, then resume a blocked order after the balance changes.</p></div>
           </div>
         </section>
@@ -112,7 +112,7 @@ export default function BotConsole() {
           <div className="section-header compact-header">
             <div>
               <p className="eyebrow">Live conversation</p>
-              <h2>{messages.length ? "Simulator running" : "Start with HI or MENU"}</h2>
+              <h2>{messages.length ? "Conversation active" : "Start with HI or MENU"}</h2>
             </div>
             <div className="button-row">
               <button className="ghost-button" disabled={resetting} onClick={() => setMessages([])} type="button"><RefreshCcw size={15} /> Clear local log</button>
@@ -159,3 +159,4 @@ export default function BotConsole() {
     </section>
   );
 }
+

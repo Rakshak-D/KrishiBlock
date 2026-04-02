@@ -15,7 +15,6 @@ export default function AccessPanel({
   submitRegister,
   otpRequested,
   requestOtp,
-  devOtp,
   otp,
   setOtp,
   otpError,
@@ -52,7 +51,7 @@ export default function AccessPanel({
           </label>
           <label className="field-stack" htmlFor="register-village">
             Village or city
-            <input autoComplete="off" id="register-village" name="village" onChange={(event) => onRegisterField("village", event.target.value)} placeholder="Mandya…" value={registerForm.village} />
+            <input autoComplete="address-level2" id="register-village" name="village" onChange={(event) => onRegisterField("village", event.target.value)} placeholder="Mandya…" value={registerForm.village} />
           </label>
           <div className="form-grid two-col-grid">
             <label className="field-stack" htmlFor="register-role">
@@ -85,15 +84,6 @@ export default function AccessPanel({
             <button className="primary-button" disabled={submitting || Boolean(phoneError)} onClick={requestOtp} type="button">{submitting ? "Sending OTP…" : "Request OTP"}</button>
           ) : (
             <>
-              {devOtp ? (
-                <div className="dev-otp-card" aria-live="polite">
-                  <div>
-                    <span className="eyebrow">Development OTP</span>
-                    <strong>{devOtp}</strong>
-                  </div>
-                  <button className="ghost-button" onClick={() => setOtp(devOtp)} type="button">Use code</button>
-                </div>
-              ) : null}
               <label className="field-stack" htmlFor="access-otp">
                 Enter OTP
                 <input
@@ -115,13 +105,13 @@ export default function AccessPanel({
               </div>
             </>
           )}
-          <small className="mini-note">Existing users can sign in with OTP. New users can create their profile directly from this page.</small>
+          <small className="mini-note">Existing users sign in with OTP. New users create the account directly from this page.</small>
         </div>
       )}
 
       <div className="button-row top-gap">
         <Link className="ghost-button" to="/market">Browse listings</Link>
-        <Link className="ghost-button" to="/bot">Open bot lab</Link>
+        <Link className="ghost-button" to="/bot">Open conversation console</Link>
       </div>
     </div>
   );

@@ -19,8 +19,8 @@ from app.services.blockchain_sim import hash_listing
 from app.services.mandi_price import get_mandi_price
 from app.services.notification import send_notification
 from app.services.qr_service import generate_listing_qr, inr_to_usd
-from app.services.wallet_service import cancel_listing, confirm_order_delivery, ensure_wallet, mark_order_in_transit, update_listing
-from app.utils.escrow import build_release_key, mask_release_key
+from app.services.wallet_service import anchor_listing_on_chain, cancel_listing, confirm_order_delivery, ensure_wallet, mark_order_in_transit, update_listing
+from app.utils.escrow import build_release_key
 from app.utils.id_generator import generate_listing_id
 from app.utils.serializers import decimal_to_float, envelope, serialize_datetime
 from app.utils.validators import validate_name
@@ -67,7 +67,7 @@ async def overview(current_user: User = Depends(get_current_user), db: AsyncSess
     recent_transactions_result = await db.execute(
         select(Transaction)
         .where(Transaction.user_id == current_user.id)
-        .order_by(Transaction.created_at.desc(), Transaction.id.desc())
+        .order_by(Transaction.block_height.desc().nulls_last(), Transaction.created_at.desc(), Transaction.id.desc())
         .limit(6)
     )
     recent_transactions = [
@@ -392,7 +392,7 @@ async def transactions(
     if date_to is not None:
         query = query.where(Transaction.created_at <= date_to)
         count_query = count_query.where(Transaction.created_at <= date_to)
-    query = query.order_by(Transaction.created_at.desc(), Transaction.id.desc()).offset(offset).limit(limit)
+    query = query.order_by(Transaction.block_height.desc().nulls_last(), Transaction.created_at.desc(), Transaction.id.desc()).offset(offset).limit(limit)
     total = int((await db.execute(count_query)).scalar_one())
     result = await db.execute(query)
     items = [
@@ -457,6 +457,7 @@ async def create_listing(
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invalid market type or pickup type.') from exc
 
+    created_at = datetime.now(timezone.utc)
     price_inr = Decimal(str(payload.price_per_kg)).quantize(Decimal('0.01'))
     quantity = Decimal(str(payload.quantity_kg)).quantize(Decimal('0.01'))
     stored_price = inr_to_usd(price_inr) if listing_market == ListingMarketType.GLOBAL else price_inr
@@ -474,6 +475,7 @@ async def create_listing(
         pickup_type=pickup_type,
         gi_tag=payload.gi_tag,
         organic_certified=bool(payload.organic_certified),
+        created_at=created_at,
         blockchain_hash=hash_listing(
             {
                 'farmer_id': current_user.id,
@@ -485,13 +487,14 @@ async def create_listing(
                 'pickup_type': pickup_type.value,
                 'gi_tag': payload.gi_tag,
                 'organic_certified': bool(payload.organic_certified),
-                'created_at': datetime.now(timezone.utc),
+                'created_at': created_at,
             }
         ),
     )
     db.add(listing)
     await db.flush()
     listing.qr_code_path = generate_listing_qr(listing, current_user)
+    await anchor_listing_on_chain(db, listing=listing, farmer=current_user)
     await db.commit()
     await db.refresh(listing)
 
@@ -611,7 +614,6 @@ async def my_orders(
                 'farmer_name': order.listing.farmer.name,
             },
             'delivery_code': build_release_key(order.listing, order),
-            'release_key_hint': mask_release_key(build_release_key(order.listing, order)),
         }
         for order in result.scalars().unique().all()
     ]
@@ -732,6 +734,10 @@ async def confirm_dashboard_order(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     await db.commit()
     return envelope({'message': f'Order {order.id} confirmed successfully.', 'order_id': order.id, 'status': order.status.value})
+
+
+
+
 
 
 

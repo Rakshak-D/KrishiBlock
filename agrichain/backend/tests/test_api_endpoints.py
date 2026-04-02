@@ -300,8 +300,9 @@ async def test_webhook_simulation_routes(api_client):
 
     reset_response = await client.post('/api/webhook/simulate/reset', json={'phone': '+919999100031'})
     assert reset_response.status_code == 200
-    assert reset_response.json()['data']['message'] == 'Simulated session cleared.'
+    assert reset_response.json()['data']['message'] == 'Conversation session cleared.'
 
     webhook_response = await client.post('/api/webhook/whatsapp', data={'From': 'whatsapp:+919999100031', 'Body': 'HI'})
     assert webhook_response.status_code == 403
+
 

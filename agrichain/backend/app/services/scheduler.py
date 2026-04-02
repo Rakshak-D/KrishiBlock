@@ -3,7 +3,7 @@ from __future__ import annotations
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from app.database import AsyncSessionLocal
-from app.services.mandi_price import FALLBACK_PRICES, get_mandi_price
+from app.services.mandi_price import refresh_mandi_cache
 from app.services.wallet_service import expire_listings as expire_listings_service
 from app.services.wallet_service import process_withdrawals as process_withdrawals_service
 
@@ -18,8 +18,7 @@ async def expire_listings() -> None:
 
 
 async def refresh_mandi_prices() -> None:
-    for crop in FALLBACK_PRICES:
-        await get_mandi_price(crop)
+    await refresh_mandi_cache()
 
 
 async def process_withdrawals() -> None:

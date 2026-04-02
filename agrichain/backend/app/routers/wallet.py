@@ -55,13 +55,13 @@ async def add_wallet_money(
     if not valid:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=error)
     try:
-        wallet = await credit_wallet(db, user=current_user, amount=Decimal(str(amount)), description='Simulated wallet top-up from dashboard.')
+        wallet = await credit_wallet(db, user=current_user, amount=Decimal(str(amount)), description='Wallet top-up completed from dashboard.')
     except ValueError as exc:
         await db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     await db.commit()
     await send_notification(current_user.phone, 'wallet_credited', {'amount': f'{amount:.2f}', 'balance': f'{wallet.balance:.2f}'}, current_user.language)
-    return envelope({'message': 'Simulated payment link sent and wallet credited.', 'balance': decimal_to_float(wallet.balance)})
+    return envelope({'message': 'Wallet credited successfully.', 'balance': decimal_to_float(wallet.balance)})
 
 
 @router.post('/withdraw')
@@ -85,4 +85,5 @@ async def withdraw_wallet_money(
         await db.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     await db.commit()
-    return envelope({'message': f'₹{withdrawal.amount:.2f} will reach your UPI in 1-2 hours (simulated).', 'withdrawal_id': withdrawal.id, 'status': withdrawal.status.value})
+    return envelope({'message': f'₹{withdrawal.amount:.2f} withdrawal is queued for settlement.', 'withdrawal_id': withdrawal.id, 'status': withdrawal.status.value})
+

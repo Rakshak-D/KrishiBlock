@@ -52,7 +52,7 @@
   "wallet_menu": "[hi] Wallet Menu:\n1. Balance\n2. Add Money\n3. Withdraw\n4. Mini Statement",
   "wallet_balance": "[hi] Wallet balance: ₹{balance}\nLocked in escrow: ₹{locked}",
   "wallet_add_ask_amount": "[hi] Enter amount to add (minimum ₹10).",
-  "wallet_add_confirm": "[hi] A simulated payment link is ready for ₹{amount}. Reply YES to confirm the top-up.",
+  "wallet_add_confirm": "[hi] A payment request for ₹{amount} is ready. Reply YES to confirm the top-up.",
   "wallet_add_done": "[hi] ₹{amount} added successfully. New balance: ₹{balance}",
   "wallet_add_limit": "[hi] This top-up would exceed your wallet balance limit.",
   "wallet_withdraw_ask_amount": "[hi] Enter withdrawal amount.",
@@ -73,7 +73,7 @@
   "invalid_choice": "[hi] Please choose a number between 1 and {max}.",
   "session_timeout": "[hi] Your session timed out. Send MENU to continue.",
   "error_generic": "[hi] Something went wrong. Please try again.",
-  "auth_required": "[hi] Please register on WhatsApp first.",
+  "auth_required": "[hi] Please complete registration first.",
   "order_not_found": "[hi] Order {order_id} was not found.",
   "action_cancelled": "[hi] Action cancelled. Reply MENU to continue.",
   "notification_listing_created": "[hi] Your {crop} listing (ID: {listing_id}) is now live!",
@@ -86,3 +86,4 @@
   "notification_delivery_confirmed": "Delivery confirmed for order {order_id}. ₹{amount} has been released to your wallet.",
   "notification_delivery_recorded": "Delivery for order {order_id} is now confirmed. Escrow of ₹{amount} has been closed."
 }
+

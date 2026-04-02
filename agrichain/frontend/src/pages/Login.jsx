@@ -19,7 +19,6 @@ export default function Login() {
   const [mode, setMode] = useState("register");
   const [submitting, setSubmitting] = useState(false);
   const [otpRequested, setOtpRequested] = useState(false);
-  const [devOtp, setDevOtp] = useState("");
   const [otp, setOtp] = useState("");
   const [phone, setPhone] = useState("");
   const [registerForm, setRegisterForm] = useState({ name: "", village: "", user_type: "farmer", language: "en", market_type: "local" });
@@ -36,7 +35,6 @@ export default function Login() {
 
   useEffect(() => {
     setOtpRequested(false);
-    setDevOtp("");
     setOtp("");
   }, [mode, phone]);
 
@@ -49,7 +47,9 @@ export default function Login() {
       login(result.token, result.user);
       toast.success(result.onboarding?.message || "Account created.");
       navigate("/dashboard");
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const requestOtp = async () => {
@@ -57,10 +57,14 @@ export default function Login() {
     setSubmitting(true);
     try {
       const result = await agrichainApi.requestOtp({ phone });
-      setDevOtp(result.dev_otp || "");
+      if (result.dev_otp) {
+        setOtp(result.dev_otp);
+      }
       setOtpRequested(true);
-      toast.success(result.dev_otp ? `Development OTP: ${result.dev_otp}` : result.message || "OTP sent.");
-    } finally { setSubmitting(false); }
+      toast.success(result.message || "OTP sent.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const verifyOtp = async () => {
@@ -71,13 +75,31 @@ export default function Login() {
       login(result.token, result.user);
       toast.success("Signed in successfully.");
       navigate("/dashboard");
-    } finally { setSubmitting(false); }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <section className="auth-shell auth-layout auth-layout-expanded">
       <AccessIntro stats={stats} />
-      <AccessPanel mode={mode} setMode={setMode} phone={phone} setPhone={setPhone} phoneError={phoneError} registerForm={registerForm} onRegisterField={(field, value) => setRegisterForm((current) => ({ ...current, [field]: value }))} submitting={submitting} submitRegister={submitRegister} otpRequested={otpRequested} requestOtp={requestOtp} devOtp={devOtp} otp={otp} setOtp={setOtp} otpError={otpError} verifyOtp={verifyOtp} />
+      <AccessPanel
+        mode={mode}
+        setMode={setMode}
+        phone={phone}
+        setPhone={setPhone}
+        phoneError={phoneError}
+        registerForm={registerForm}
+        onRegisterField={(field, value) => setRegisterForm((current) => ({ ...current, [field]: value }))}
+        submitting={submitting}
+        submitRegister={submitRegister}
+        otpRequested={otpRequested}
+        requestOtp={requestOtp}
+        otp={otp}
+        setOtp={setOtp}
+        otpError={otpError}
+        verifyOtp={verifyOtp}
+      />
     </section>
   );
 }

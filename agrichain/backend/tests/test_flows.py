@@ -88,6 +88,7 @@ async def test_order_confirmation_releases_escrow_logs_fee_and_keeps_chain_valid
     order.listing = listing
     order.listing.farmer = farmer
 
+    await mark_order_in_transit(db_session, order=order, farmer=farmer)
     await confirm_order_delivery(db_session, order=order, buyer=buyer)
     await db_session.commit()
 
@@ -258,4 +259,6 @@ async def test_farmer_can_mark_order_in_transit_before_delivery_confirmation(db_
     refreshed = (await db_session.execute(select(Order).where(Order.id == order.id))).scalar_one()
     assert refreshed.status == OrderStatus.IN_TRANSIT
     assert refreshed.dispatched_at is not None
+
+
 

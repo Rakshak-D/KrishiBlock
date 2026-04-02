@@ -92,9 +92,10 @@ async def simulate_whatsapp_message(payload: SimulatedMessageRequest, db: AsyncS
 @router.post('/webhook/simulate/reset')
 async def reset_simulated_session(payload: SimulatedPhoneRequest) -> dict[str, object | None]:
     await clear_session(payload.phone)
-    return envelope({'message': 'Simulated session cleared.'})
+    return envelope({'message': 'Conversation session cleared.'})
 
 
 @router.get('/health')
 async def health() -> dict[str, object | None]:
     return envelope({'status': 'ok'})
+

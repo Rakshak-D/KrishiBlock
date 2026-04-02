@@ -28,7 +28,7 @@ export default function ListingDetailAside({ listing, qrUrl, quantity, setQuanti
           <Link className="ghost-button" to="/dashboard">Workspace</Link>
         </div>
         <div className="info-list top-gap">
-          <div className="info-row"><WalletCards size={16} /> Buyer funds move into escrow before the farmer is paid.</div>
+          <div className="info-row"><WalletCards size={16} /> Buyer funds lock in escrow before the payout is released.</div>
           <div className="info-row"><QrCode size={16} /> Scan or share the QR to open the public verification page.</div>
         </div>
         {qrUrl ? <img alt="Listing QR" className="qr-image top-gap" height="240" src={qrUrl} width="240" /> : null}
@@ -50,10 +50,11 @@ export default function ListingDetailAside({ listing, qrUrl, quantity, setQuanti
             <div className="info-row">Listing ID: {listing.dpp.listing_id}</div>
             <div className="info-row">GI tag: {listing.dpp.product.gi_tag || "Not provided"}</div>
             <div className="info-row">Organic: {listing.dpp.product.organic ? "Certified" : "No"}</div>
-            <div className="info-row">Orders in batch: {listing.dpp.logistics?.orders?.length || 0}</div>
+            <div className="info-row">Orders in batch: {listing.dpp.supply_chain?.length || 0}</div>
           </div>
         </section>
       ) : null}
     </aside>
   );
 }
+

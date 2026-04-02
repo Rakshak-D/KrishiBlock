@@ -33,6 +33,7 @@ def _user_payload(user: User) -> dict[str, object | None]:
         'market_type': user.market_type.value,
         'reputation_score': float(user.reputation_score),
         'created_at': serialize_datetime(user.created_at),
+        'wallet_address': user.wallet_address,
     }
 
 
@@ -84,6 +85,7 @@ async def register_route(payload: RegisterRequest, db: AsyncSession = Depends(ge
                 'user_type': user.user_type.value,
                 'language': user.language,
                 'market_type': user.market_type.value,
+                'wallet_address': user.wallet_address,
             },
             'onboarding': {
                 'wallet_balance': float(settings.WELCOME_BONUS_AMOUNT),
@@ -105,10 +107,9 @@ async def request_otp_route(payload: OTPRequest, db: AsyncSession = Depends(get_
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='No AgriChain account was found for this phone number. Please create one first.')
 
     otp_result = await request_otp(payload.phone)
-    response = {'message': 'OTP sent to your configured messaging channel.'}
+    response = {'message': 'OTP sent successfully.'}
     if otp_result.get('otp'):
         response['dev_otp'] = otp_result['otp']
-        response['message'] = 'OTP generated. Development mode also returned it in the API response.'
     elif not otp_result.get('delivered'):
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail='OTP could not be delivered. Configure Twilio or switch to development mode.')
     return envelope(response)
@@ -136,4 +137,3 @@ async def verify_otp_route(payload: OTPVerifyRequest, db: AsyncSession = Depends
 @router.get('/me')
 async def me(current_user: User = Depends(get_current_user)) -> dict[str, object | None]:
     return envelope(_user_payload(current_user))
-

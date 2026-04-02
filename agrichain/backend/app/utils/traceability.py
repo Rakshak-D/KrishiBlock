@@ -7,7 +7,7 @@ from app.config import get_settings
 from app.models.listing import Listing, ListingStatus
 from app.models.order import Order
 from app.models.transaction import Transaction
-from app.services.blockchain_sim import verify_chain
+from app.services.blockchain_sim import block_confirmations, verify_chain
 from app.utils.serializers import decimal_to_float, serialize_datetime
 
 
@@ -35,6 +35,15 @@ def _normalized_transactions(transactions: Iterable[Transaction]) -> list[dict[s
             'description': tx.description,
             'created_at': tx.created_at,
             'hash': tx.hash,
+            'transaction_hash': tx.transaction_hash,
+            'previous_hash': tx.previous_hash,
+            'merkle_root': tx.merkle_root,
+            'signature': tx.signature,
+            'signer_public_key': tx.signer_public_key,
+            'signer_address': tx.signer_address,
+            'block_height': tx.block_height,
+            'difficulty': tx.difficulty,
+            'nonce': tx.nonce,
         }
         for tx in transactions
     ]
@@ -140,9 +149,10 @@ def build_supply_flow(listing: Listing) -> list[dict[str, str | int | None]]:
 def build_transaction_trail(listing: Listing, transactions: Iterable[Transaction]) -> list[dict[str, object | None]]:
     orders = {order.id: order for order in _sorted_orders(listing)}
     order_buyer_ids = {order.buyer_id for order in orders.values()}
+    current_height = max((int(tx.block_height or 0) for tx in transactions), default=0)
     trail: list[dict[str, object | None]] = []
     for tx in transactions:
-        actor = 'Platform ledger'
+        actor = 'AgriChain ledger'
         if tx.user_id == listing.farmer_id:
             actor = listing.farmer.name if listing.farmer else 'Farmer wallet'
         elif tx.user_id in order_buyer_ids:
@@ -157,6 +167,9 @@ def build_transaction_trail(listing: Listing, transactions: Iterable[Transaction
                 'description': tx.description,
                 'created_at': serialize_datetime(tx.created_at),
                 'hash': tx.hash,
+                'transaction_hash': tx.transaction_hash,
+                'block_height': tx.block_height,
+                'confirmations': block_confirmations(int(tx.block_height or 0), current_height) if tx.block_height else 0,
             }
         )
     return trail
@@ -165,12 +178,15 @@ def build_transaction_trail(listing: Listing, transactions: Iterable[Transaction
 def build_transparency_payload(listing: Listing, transactions: list[Transaction]) -> dict[str, object | None]:
     normalized = _normalized_transactions(transactions)
     reference_ids = sorted({reference_id for reference_id in [listing.id, *[order.id for order in listing.orders], *[tx.reference_id for tx in transactions if tx.reference_id]] if reference_id})
+    latest_block = max((int(tx.block_height or 0) for tx in transactions), default=0)
     return {
         'listing_hash': listing.blockchain_hash,
         'blockchain_verified': verify_chain(normalized),
         'order_count': len(listing.orders),
         'transaction_count': len(transactions),
-        'latest_transaction_hash': transactions[-1].hash if transactions else None,
+        'latest_transaction_hash': transactions[-1].transaction_hash if transactions else None,
+        'latest_block_hash': transactions[-1].hash if transactions else None,
+        'latest_block_height': latest_block,
         'reference_ids': reference_ids,
         'verify_url': f'{settings.public_verify_url_base}/verify/{listing.id}',
     }

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -10,7 +10,8 @@ from app.database import get_db
 from app.models.listing import Listing
 from app.models.order import Order
 from app.models.transaction import Transaction
-from app.services.blockchain_sim import chain_transaction, get_genesis_hash, verify_chain
+from app.services.blockchain_sim import block_confirmations, verify_chain
+from app.services.session import _get_json
 from app.utils.serializers import decimal_to_float, envelope, serialize_datetime
 
 
@@ -28,18 +29,29 @@ def _normalized_payload(transaction: Transaction) -> dict[str, object | None]:
         'reference_id': transaction.reference_id,
         'description': transaction.description,
         'created_at': transaction.created_at,
+        'hash': transaction.hash,
+        'transaction_hash': transaction.transaction_hash,
+        'previous_hash': transaction.previous_hash,
+        'merkle_root': transaction.merkle_root,
+        'signature': transaction.signature,
+        'signer_public_key': transaction.signer_public_key,
+        'signer_address': transaction.signer_address,
+        'block_height': transaction.block_height,
+        'difficulty': transaction.difficulty,
+        'nonce': transaction.nonce,
     }
 
 
 @router.get('')
 async def public_ledger(
     limit: int = Query(default=12, ge=3, le=50),
+    search: str | None = Query(default=None, max_length=120),
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, object | None]:
     transactions_result = await db.execute(
         select(Transaction)
         .options(selectinload(Transaction.user))
-        .order_by(Transaction.created_at.asc(), Transaction.id.asc())
+        .order_by(Transaction.block_height.asc().nulls_last(), Transaction.created_at.asc(), Transaction.id.asc())
     )
     transactions = transactions_result.scalars().all()
 
@@ -75,46 +87,64 @@ async def public_ledger(
         )
         listings_by_id.update({listing.id: listing for listing in referenced_listings_result.scalars().unique().all()})
 
+    chain_entries = [_normalized_payload(transaction) for transaction in transactions]
+    chain_verified = verify_chain(chain_entries)
+    current_height = max((int(tx.block_height or 0) for tx in transactions), default=0)
+    average_hash_rate = round(sum(float(tx.hash_rate_hps or 0) for tx in transactions) / max(len(transactions), 1), 2) if transactions else 0.0
+
     blocks: list[dict[str, object | None]] = []
-    previous_hash = get_genesis_hash()
-    for index, transaction in enumerate(transactions, start=1):
-        expected_hash = chain_transaction(previous_hash, _normalized_payload(transaction))
+    for transaction in transactions:
         reference_listing = listings_by_id.get(transaction.reference_id or '')
         reference_order = orders_by_id.get(transaction.reference_id or '')
         linked_listing = reference_listing or (reference_order.listing if reference_order is not None else None)
-        actor_name = transaction.user.name if transaction.user is not None else 'AgriChain system'
+        actor_name = transaction.user.name if transaction.user is not None else 'AgriChain'
         blocks.append(
             {
-                'block_number': index,
+                'block_number': transaction.block_height,
                 'transaction_id': transaction.id,
-                'previous_hash': previous_hash,
+                'transaction_hash': transaction.transaction_hash,
+                'previous_hash': transaction.previous_hash,
                 'current_hash': transaction.hash,
-                'expected_hash': expected_hash,
-                'verified': transaction.hash == expected_hash,
+                'merkle_root': transaction.merkle_root,
+                'verified': chain_verified,
                 'type': transaction.type.value,
                 'actor_name': actor_name,
                 'actor_role': transaction.user.user_type.value if transaction.user is not None else 'system',
+                'signer_address': transaction.signer_address,
                 'reference_id': transaction.reference_id,
                 'linked_listing_id': linked_listing.id if linked_listing is not None else None,
                 'linked_crop_name': linked_listing.crop_name if linked_listing is not None else None,
                 'amount': decimal_to_float(transaction.amount),
                 'description': transaction.description,
                 'created_at': serialize_datetime(transaction.created_at),
+                'difficulty': transaction.difficulty,
+                'nonce': transaction.nonce,
+                'hash_rate_hps': transaction.hash_rate_hps,
+                'confirmations': block_confirmations(int(transaction.block_height or 0), current_height) if transaction.block_height else 0,
             }
         )
-        previous_hash = transaction.hash
+
+    if search:
+        needle = search.strip().lower()
+        blocks = [
+            block for block in blocks
+            if needle in str(block.get('transaction_id') or '').lower()
+            or needle in str(block.get('reference_id') or '').lower()
+            or needle in str(block.get('current_hash') or '').lower()
+            or needle in str(block.get('signer_address') or '').lower()
+            or needle in str(block.get('linked_crop_name') or '').lower()
+        ]
 
     totals_result = await db.execute(
         select(
             func.count(Transaction.id),
-            func.count(Listing.id),
+            func.count(func.distinct(Transaction.signer_address)),
             func.count(func.distinct(Order.id)),
         )
         .select_from(Transaction)
         .join(Order, Transaction.reference_id == Order.id, isouter=True)
-        .join(Listing, Listing.id == Transaction.reference_id, isouter=True)
     )
-    total_blocks, listing_hashes_from_transactions, linked_orders = totals_result.one()
+    total_blocks, total_addresses, linked_orders = totals_result.one()
 
     anchors = [
         {
@@ -130,25 +160,22 @@ async def public_ledger(
         for listing in anchor_listings
     ]
 
-    normalized_transactions = [
-        {
-            **_normalized_payload(transaction),
-            'hash': transaction.hash,
-        }
-        for transaction in transactions
-    ]
+    mempool_payload = await _get_json('mempool:pending')
+    pending_count = len(mempool_payload) if isinstance(mempool_payload, list) else 0
 
     summary = {
-        'chain_verified': verify_chain(normalized_transactions),
-        'genesis_hash': get_genesis_hash(),
+        'chain_verified': chain_verified,
+        'genesis_hash': transactions[0].previous_hash if transactions else None,
         'total_blocks': int(total_blocks or 0),
+        'total_transactions': int(total_blocks or 0),
         'listing_anchors': len(anchors),
         'orders_tracked': int(linked_orders or 0),
-        'ledger_events': int(total_blocks or 0),
+        'active_addresses': int(total_addresses or 0),
+        'mempool_pending': pending_count,
+        'difficulty': int(transactions[-1].difficulty or 0) if transactions else 0,
+        'average_hash_rate_hps': average_hash_rate,
         'latest_block_hash': blocks[-1]['current_hash'] if blocks else None,
         'latest_block_at': blocks[-1]['created_at'] if blocks else None,
     }
 
     return envelope({'summary': summary, 'blocks': list(reversed(blocks[-limit:])), 'anchors': anchors})
-
-

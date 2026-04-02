@@ -3,14 +3,14 @@ import { CheckCircle2, MessageSquareText, ShieldCheck, WalletCards } from "lucid
 export default function AccessIntro({ stats }) {
   return (
     <div className="auth-card auth-copy-card auth-copy-card-rich">
-      <p className="eyebrow">Access AgriChain</p>
-      <h1>Register on the web, continue in the bot, and manage every buyer or farmer workflow from one account.</h1>
-      <p>The old “register in another app first” blocker is gone. You can now create an AgriChain account here, sign in with OTP, then move between wallet, listings, orders, verification, and bot flows without resetting context.</p>
+      <p className="eyebrow">AgriChain access</p>
+      <h1>Create one account and use it across marketplace, escrow, wallet, verification, and WhatsApp flows.</h1>
+      <p>Registration and sign-in now happen directly in AgriChain, with the same identity carrying through the web app and conversation channel.</p>
       <div className="info-list auth-checklist">
-        <div className="info-row"><CheckCircle2 size={16} /> Web registration now creates the account and starter wallet directly in `agrichain`.</div>
-        <div className="info-row"><WalletCards size={16} /> Wallet, escrow, dispatch, and verification all use the same profile.</div>
-        <div className="info-row"><MessageSquareText size={16} /> WhatsApp simulator still works for onboarding, but it’s no longer required for access.</div>
-        <div className="info-row"><ShieldCheck size={16} /> Public traceability stays visible to buyers even without login.</div>
+        <div className="info-row"><CheckCircle2 size={16} /> Account setup creates the profile, wallet, and blockchain wallet address in one pass.</div>
+        <div className="info-row"><WalletCards size={16} /> Wallet, escrow, dispatch, and payouts stay tied to the same account.</div>
+        <div className="info-row"><MessageSquareText size={16} /> The browser console can drive the same conversation engine used by WhatsApp.</div>
+        <div className="info-row"><ShieldCheck size={16} /> Public verification remains visible before sign-in.</div>
       </div>
       <div className="hero-stats-grid top-gap">
         <div className="summary-card"><span>Listings live</span><strong>{stats.totalListings}</strong></div>
