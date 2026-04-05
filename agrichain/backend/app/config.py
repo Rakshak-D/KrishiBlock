@@ -3,6 +3,8 @@ from __future__ import annotations
 from decimal import Decimal
 from functools import lru_cache
 from pathlib import Path
+import socket
+from urllib.parse import urlsplit, urlunsplit
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -10,7 +12,41 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 APP_DIR = Path(__file__).resolve().parent
+LOOPBACK_HOSTS = {'localhost', '127.0.0.1', '0.0.0.0', '::1'}
 
+
+@lru_cache(maxsize=1)
+def detect_lan_ip() -> str | None:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+            probe.connect(('8.8.8.8', 80))
+            candidate = probe.getsockname()[0]
+            if candidate and candidate not in LOOPBACK_HOSTS:
+                return candidate
+    except OSError:
+        pass
+
+    try:
+        candidate = socket.gethostbyname(socket.gethostname())
+        if candidate and candidate not in LOOPBACK_HOSTS:
+            return candidate
+    except OSError:
+        pass
+
+    return None
+
+
+def normalize_public_url(url: str) -> str:
+    parts = urlsplit(url.rstrip('/'))
+    if not parts.hostname or parts.hostname not in LOOPBACK_HOSTS:
+        return url.rstrip('/')
+
+    lan_ip = detect_lan_ip()
+    if not lan_ip:
+        return url.rstrip('/')
+
+    netloc = lan_ip if parts.port is None else f'{lan_ip}:{parts.port}'
+    return urlunsplit((parts.scheme or 'http', netloc, parts.path.rstrip('/'), parts.query, parts.fragment)).rstrip('/')
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -95,9 +131,11 @@ class Settings(BaseSettings):
 
     @property
     def public_verify_url_base(self) -> str:
-        return (self.PUBLIC_VERIFY_BASE_URL or self.FRONTEND_ORIGIN or self.BASE_URL).rstrip('/')
+        preferred = self.PUBLIC_VERIFY_BASE_URL or self.FRONTEND_ORIGIN or self.BASE_URL
+        return normalize_public_url(preferred)
 
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
+

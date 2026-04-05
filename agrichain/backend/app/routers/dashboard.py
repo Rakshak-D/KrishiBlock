@@ -18,7 +18,7 @@ from app.schemas import ListingCreateRequest, ListingUpdateRequest, OrderConfirm
 from app.services.blockchain_sim import hash_listing
 from app.services.mandi_price import get_mandi_price
 from app.services.notification import send_notification
-from app.services.qr_service import generate_listing_qr, inr_to_usd
+from app.services.qr_service import build_verify_url, generate_listing_qr, inr_to_usd
 from app.services.wallet_service import anchor_listing_on_chain, cancel_listing, confirm_order_delivery, ensure_wallet, mark_order_in_transit, update_listing
 from app.utils.escrow import build_release_key
 from app.utils.id_generator import generate_listing_id
@@ -58,6 +58,7 @@ def _listing_payload(listing: Listing) -> dict[str, object | None]:
         'organic_certified': listing.organic_certified,
         'created_at': serialize_datetime(listing.created_at),
         'expires_at': serialize_datetime(listing.expires_at),
+        'verify_url': build_verify_url(listing.id),
     }
 
 
@@ -734,6 +735,7 @@ async def confirm_dashboard_order(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     await db.commit()
     return envelope({'message': f'Order {order.id} confirmed successfully.', 'order_id': order.id, 'status': order.status.value})
+
 
 
 

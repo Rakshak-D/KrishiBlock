@@ -17,7 +17,7 @@ from app.models.user import User, UserType
 from app.schemas import ListingPurchaseRequest
 from app.services.mandi_price import get_mandi_price
 from app.services.notification import send_notification
-from app.services.qr_service import build_dpp, inr_to_usd
+from app.services.qr_service import build_dpp, build_verify_url, inr_to_usd
 from app.services.wallet_service import place_order
 from app.utils.escrow import build_release_key
 from app.utils.serializers import decimal_to_float, envelope, serialize_datetime
@@ -47,6 +47,7 @@ def _listing_card_payload(listing: Listing) -> dict[str, object | None]:
         'gi_tag': listing.gi_tag,
         'organic_certified': listing.organic_certified,
         'created_at': serialize_datetime(listing.created_at),
+        'verify_url': build_verify_url(listing.id),
     }
 
 
@@ -401,6 +402,7 @@ async def buy_listing(
             'delivery_code': build_release_key(listing, order),
         }
     )
+
 
 
 

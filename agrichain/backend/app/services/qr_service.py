@@ -21,9 +21,13 @@ def inr_to_usd(value: Decimal) -> Decimal:
     return (Decimal(value) / settings.USD_EXCHANGE_RATE).quantize(Decimal('0.01'))
 
 
+def build_verify_url(listing_id: str) -> str:
+    return f'{settings.public_verify_url_base}/verify/{listing_id}'
+
+
 def generate_listing_qr(listing: 'Listing', farmer: 'User') -> str:
     settings.qr_dir.mkdir(parents=True, exist_ok=True)
-    verify_url = f'{settings.public_verify_url_base}/verify/{listing.id}'
+    verify_url = build_verify_url(listing.id)
 
     qr = qrcode.QRCode(version=1, box_size=10, border=4)
     qr.add_data(verify_url)
@@ -68,5 +72,6 @@ def build_dpp(listing: 'Listing', farmer: 'User', orders: list['Order']) -> dict
         ],
         'blockchain_hash': listing.blockchain_hash,
         'verified': True,
-        'verify_url': f'{settings.public_verify_url_base}/verify/{listing.id}',
+        'verify_url': build_verify_url(listing.id),
     }
+

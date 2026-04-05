@@ -1,9 +1,15 @@
 .idea/
+.vscode/
+.pytest_cache/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .DS_Store
+.coverage
+coverage/
+htmlcov/
+*.log
 
 agrichain/backend/.env
 agrichain/backend/venv/

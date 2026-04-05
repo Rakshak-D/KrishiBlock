@@ -21,8 +21,8 @@ The current build gives you one webapp with:
 ## What You Need To Fill
 
 Update only the environment files before running:
-- [backend/.env.example](/C:/RAKSHAK/MY%20CODE/team-bumblebee/agrichain/backend/.env.example) -> copy to `backend/.env`
-- [frontend/.env.example](/C:/RAKSHAK/MY%20CODE/team-bumblebee/agrichain/frontend/.env.example) -> copy to `frontend/.env` if you want a custom API URL
+- `backend/.env.example` -> copy to `backend/.env`
+- `frontend/.env.example` -> copy to `frontend/.env` if you want a custom API URL
 
 ## Local Setup
 
@@ -31,11 +31,13 @@ Update only the environment files before running:
    - `docker compose up -d`
 2. Start the backend:
    - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\agrichain\backend"`
-   - `venv\Scripts\activate`
+   - create and activate a virtual environment
+   - `pip install -r requirements.txt`
    - `alembic upgrade head`
    - `uvicorn app.main:app --reload`
 3. Start the frontend:
    - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\agrichain\frontend"`
+   - `npm install`
    - `npm run dev`
 
 ## Local URLs
@@ -86,11 +88,11 @@ Update only the environment files before running:
 
 ## Verification Commands
 
-From [backend](/C:/RAKSHAK/MY%20CODE/team-bumblebee/agrichain/backend):
+From `backend`:
 - `venv\Scripts\python -m pytest tests -v`
 - `venv\Scripts\python -m compileall app`
 
-From [frontend](/C:/RAKSHAK/MY%20CODE/team-bumblebee/agrichain/frontend):
+From `frontend`:
 - `npm run build`
 
 ## Honesty Notes

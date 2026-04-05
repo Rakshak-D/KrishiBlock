@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { PackageCheck, QrCode, WalletCards } from "lucide-react";
+import { ExternalLink, PackageCheck, QrCode, WalletCards } from "lucide-react";
 
 export default function ListingDetailAside({ listing, qrUrl, quantity, setQuantity, quantityError, estimatedTotalDisplay, submitting, onRequestPlaceOrder, insights }) {
   return (
@@ -30,8 +30,14 @@ export default function ListingDetailAside({ listing, qrUrl, quantity, setQuanti
         <div className="info-list top-gap">
           <div className="info-row"><WalletCards size={16} /> Buyer funds lock in escrow before the payout is released.</div>
           <div className="info-row"><QrCode size={16} /> Scan or share the QR to open the public verification page.</div>
+          {listing.verify_url ? <div className="info-row">Share link: <span className="hash-block">{listing.verify_url}</span></div> : null}
         </div>
         {qrUrl ? <img alt="Listing QR" className="qr-image top-gap" height="240" src={qrUrl} width="240" /> : null}
+        {listing.verify_url ? (
+          <a className="ghost-button top-gap" href={listing.verify_url} rel="noreferrer" target="_blank">
+            <ExternalLink size={15} /> Open verify page
+          </a>
+        ) : null}
       </section>
 
       <section className="detail-card compact-panel">
@@ -57,4 +63,3 @@ export default function ListingDetailAside({ listing, qrUrl, quantity, setQuanti
     </aside>
   );
 }
-
