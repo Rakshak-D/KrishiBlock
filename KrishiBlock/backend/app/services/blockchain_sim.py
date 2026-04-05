@@ -19,7 +19,7 @@ from app.config import get_settings
 
 settings = get_settings()
 SECP256K1_ORDER = int('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141', 16)
-GENESIS_SEED = 'agrichain_genesis_block'
+GENESIS_SEED = 'krishiblock_genesis_block'
 
 
 @dataclass(frozen=True)
@@ -325,3 +325,4 @@ def verify_chain(transactions: list[Mapping[str, object]]) -> bool:
         previous_hash = expected_block_hash
         last_height = block_height
     return True
+

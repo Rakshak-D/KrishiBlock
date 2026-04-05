@@ -1,4 +1,4 @@
-"""initial agrichain schema
+"""initial krishiblock schema
 
 Revision ID: 0001_initial
 Revises: 
@@ -125,3 +125,4 @@ def downgrade() -> None:
     op.drop_table("wallets")
     op.drop_index("ix_users_phone", table_name="users")
     op.drop_table("users")
+

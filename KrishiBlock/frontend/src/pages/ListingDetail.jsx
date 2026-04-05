@@ -6,7 +6,7 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import ErrorState from "../components/ErrorState";
 import ListingDetailAside from "../components/listing/ListingDetailAside";
 import ListingDetailMain from "../components/listing/ListingDetailMain";
-import { agrichainApi, resolveAssetUrl } from "../services/api";
+import { krishiblockApi, resolveAssetUrl } from "../services/api";
 import useAuthStore from "../store/authStore";
 import { formatCurrency, labelize } from "../lib/formatters";
 import { normalizeListingInsights } from "../lib/workspace";
@@ -19,8 +19,8 @@ export default function ListingDetail() {
   const [quantity, setQuantity] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const detailQuery = useQuery({ queryKey: ["listing-detail", id], queryFn: () => agrichainApi.listingDetail(id) });
-  const insightsQuery = useQuery({ queryKey: ["listing-detail-insights", detailQuery.data?.crop_name, detailQuery.data?.market_type], queryFn: () => agrichainApi.listingInsights({ crop: detailQuery.data.crop_name, market_type: detailQuery.data.market_type }), enabled: Boolean(detailQuery.data?.crop_name && detailQuery.data?.market_type) });
+  const detailQuery = useQuery({ queryKey: ["listing-detail", id], queryFn: () => krishiblockApi.listingDetail(id) });
+  const insightsQuery = useQuery({ queryKey: ["listing-detail-insights", detailQuery.data?.crop_name, detailQuery.data?.market_type], queryFn: () => krishiblockApi.listingInsights({ crop: detailQuery.data.crop_name, market_type: detailQuery.data.market_type }), enabled: Boolean(detailQuery.data?.crop_name && detailQuery.data?.market_type) });
 
   const listing = useMemo(() => detailQuery.data ? ({ ...detailQuery.data, price_display: formatCurrency(detailQuery.data.price_per_kg, detailQuery.data.currency), status_label: labelize(detailQuery.data.status), pickup_label: labelize(detailQuery.data.pickup_type) }) : null, [detailQuery.data]);
   const insights = useMemo(() => normalizeListingInsights(insightsQuery.data), [insightsQuery.data]);
@@ -45,7 +45,7 @@ export default function ListingDetail() {
   const placeOrder = async () => {
     setSubmitting(true);
     try {
-      const result = await agrichainApi.buyListing(id, { quantity_kg: Number(quantity) });
+      const result = await krishiblockApi.buyListing(id, { quantity_kg: Number(quantity) });
       toast.success(`Order ${result.order_id} placed. Delivery code ${result.delivery_code || "is ready in your workspace"}.`);
       setConfirmOpen(false);
       setQuantity("");
@@ -64,3 +64,4 @@ export default function ListingDetail() {
     </>
   );
 }
+

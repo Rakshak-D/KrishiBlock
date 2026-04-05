@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import AccessIntro from "../components/auth/AccessIntro";
 import AccessPanel from "../components/auth/AccessPanel";
-import { agrichainApi } from "../services/api";
+import { krishiblockApi } from "../services/api";
 import useAuthStore from "../store/authStore";
 
 function validatePhone(value) {
@@ -22,7 +22,7 @@ export default function Login() {
   const [otp, setOtp] = useState("");
   const [phone, setPhone] = useState("");
   const [registerForm, setRegisterForm] = useState({ name: "", village: "", user_type: "farmer", language: "en", market_type: "local" });
-  const overviewQuery = useQuery({ queryKey: ["login-overview"], queryFn: agrichainApi.listingsOverview });
+  const overviewQuery = useQuery({ queryKey: ["login-overview"], queryFn: krishiblockApi.listingsOverview });
 
   const phoneError = useMemo(() => validatePhone(phone), [phone]);
   const otpError = useMemo(() => (!otpRequested || /^\d{6}$/.test(otp) ? "" : "Enter the 6-digit OTP."), [otp, otpRequested]);
@@ -43,7 +43,7 @@ export default function Login() {
     if (registerForm.name.trim().length < 3) return toast.error("Enter a valid full name.");
     setSubmitting(true);
     try {
-      const result = await agrichainApi.register({ phone, ...registerForm });
+      const result = await krishiblockApi.register({ phone, ...registerForm });
       login(result.token, result.user);
       toast.success(result.onboarding?.message || "Account created.");
       navigate("/dashboard");
@@ -56,7 +56,7 @@ export default function Login() {
     if (phoneError) return toast.error(phoneError);
     setSubmitting(true);
     try {
-      const result = await agrichainApi.requestOtp({ phone });
+      const result = await krishiblockApi.requestOtp({ phone });
       if (result.dev_otp) {
         setOtp(result.dev_otp);
       }
@@ -71,7 +71,7 @@ export default function Login() {
     if (phoneError || otpError) return toast.error(phoneError || otpError);
     setSubmitting(true);
     try {
-      const result = await agrichainApi.verifyOtp({ phone, otp });
+      const result = await krishiblockApi.verifyOtp({ phone, otp });
       login(result.token, result.user);
       toast.success("Signed in successfully.");
       navigate("/dashboard");
@@ -103,3 +103,4 @@ export default function Login() {
     </section>
   );
 }
+

@@ -62,7 +62,7 @@ class Settings(BaseSettings):
     FRONTEND_ORIGIN: str = 'http://localhost:5173'
     PUBLIC_VERIFY_BASE_URL: str | None = None
 
-    DATABASE_URL: str = 'postgresql://agrichain_user:password@localhost:5432/agrichain_db'
+    DATABASE_URL: str = 'postgresql://krishiblock_user:password@localhost:5432/krishiblock_db'
     REDIS_URL: str = 'redis://localhost:6379/0'
 
     TWILIO_ACCOUNT_SID: str = ''
@@ -138,4 +138,5 @@ class Settings(BaseSettings):
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
+
 

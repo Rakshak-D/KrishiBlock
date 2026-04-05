@@ -3,14 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import { ShieldCheck, ShieldX } from "lucide-react";
 import ErrorState from "../components/ErrorState";
 import StatusTimeline from "../components/StatusTimeline";
-import { agrichainApi } from "../services/api";
+import { krishiblockApi } from "../services/api";
 import { cropMedia, formatCurrency, formatDateTime, labelize } from "../lib/formatters";
 
 export default function Verify() {
   const { id } = useParams();
   const verifyQuery = useQuery({
     queryKey: ["verify-page", id],
-    queryFn: () => agrichainApi.verifyListing(id),
+    queryFn: () => krishiblockApi.verifyListing(id),
     retry: false,
   });
 
@@ -118,3 +118,4 @@ export default function Verify() {
     </section>
   );
 }
+

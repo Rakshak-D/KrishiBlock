@@ -5,7 +5,7 @@ import ListingCard from "../components/ListingCard";
 import ErrorState from "../components/ErrorState";
 import SectionEmpty from "../components/SectionEmpty";
 import useAuthStore from "../store/authStore";
-import { agrichainApi } from "../services/api";
+import { krishiblockApi } from "../services/api";
 import { formatCompactNumber, formatCurrency, labelize } from "../lib/formatters";
 
 const CROP_OPTIONS = ["", "tomato", "potato", "onion", "ginger", "carrot", "cabbage", "cauliflower", "brinjal", "beans", "peas", "rice", "wheat"];
@@ -19,16 +19,16 @@ export default function MarketplacePage({ market = "local" }) {
   const deferredSearch = useDeferredValue(search);
   const isGlobal = market === "global";
 
-  const overviewQuery = useQuery({ queryKey: ["listings-overview"], queryFn: agrichainApi.listingsOverview });
+  const overviewQuery = useQuery({ queryKey: ["listings-overview"], queryFn: krishiblockApi.listingsOverview });
   const listingsQuery = useQuery({
     queryKey: ["marketplace", market, crop, sortBy, page, deferredSearch],
     queryFn: () => (isGlobal
-      ? agrichainApi.globalListings({ crop: crop || undefined, search: deferredSearch || undefined, sort_by: sortBy, page, page_size: 8 })
-      : agrichainApi.listings({ crop: crop || undefined, search: deferredSearch || undefined, sort_by: sortBy, page, page_size: 8 })),
+      ? krishiblockApi.globalListings({ crop: crop || undefined, search: deferredSearch || undefined, sort_by: sortBy, page, page_size: 8 })
+      : krishiblockApi.listings({ crop: crop || undefined, search: deferredSearch || undefined, sort_by: sortBy, page, page_size: 8 })),
   });
   const insightsQuery = useQuery({
     queryKey: ["listing-insights", crop, market],
-    queryFn: () => agrichainApi.listingInsights({ crop, market_type: market }),
+    queryFn: () => krishiblockApi.listingInsights({ crop, market_type: market }),
     enabled: Boolean(crop),
   });
 
@@ -135,3 +135,4 @@ export default function MarketplacePage({ market = "local" }) {
     </section>
   );
 }
+

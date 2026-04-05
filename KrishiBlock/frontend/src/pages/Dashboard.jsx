@@ -10,7 +10,7 @@ import WorkspaceOverviewTab from "../components/workspace/WorkspaceOverviewTab";
 import WorkspaceWalletTab from "../components/workspace/WorkspaceWalletTab";
 import ErrorState from "../components/ErrorState";
 import useAuthStore from "../store/authStore";
-import { agrichainApi } from "../services/api";
+import { krishiblockApi } from "../services/api";
 import {
   normalizeIncomingOrders,
   normalizeListingInsights,
@@ -48,13 +48,13 @@ export default function Dashboard() {
   const [profileForm, setProfileForm] = useState({ name: "", village: "", language: "en" });
 
   const queries = useQueries({ queries: [
-    { queryKey: ["dashboard-overview"], queryFn: agrichainApi.dashboardOverview, enabled: Boolean(user) },
-    { queryKey: ["dashboard-listings-short"], queryFn: () => agrichainApi.myListings({ limit: 6 }), enabled: Boolean(user) },
-    { queryKey: ["dashboard-orders-short"], queryFn: () => agrichainApi.myOrders({ limit: 6 }), enabled: Boolean(user) },
-    { queryKey: ["dashboard-incoming-short"], queryFn: () => agrichainApi.incomingOrders({ limit: 6 }), enabled: Boolean(user) },
-    { queryKey: ["dashboard-transactions-full"], queryFn: () => agrichainApi.transactions({ limit: 20 }), enabled: Boolean(user) },
+    { queryKey: ["dashboard-overview"], queryFn: krishiblockApi.dashboardOverview, enabled: Boolean(user) },
+    { queryKey: ["dashboard-listings-short"], queryFn: () => krishiblockApi.myListings({ limit: 6 }), enabled: Boolean(user) },
+    { queryKey: ["dashboard-orders-short"], queryFn: () => krishiblockApi.myOrders({ limit: 6 }), enabled: Boolean(user) },
+    { queryKey: ["dashboard-incoming-short"], queryFn: () => krishiblockApi.incomingOrders({ limit: 6 }), enabled: Boolean(user) },
+    { queryKey: ["dashboard-transactions-full"], queryFn: () => krishiblockApi.transactions({ limit: 20 }), enabled: Boolean(user) },
   ]});
-  const ledgerQuery = useQuery({ queryKey: ["dashboard-ledger"], queryFn: agrichainApi.publicLedger, enabled: Boolean(user) });
+  const ledgerQuery = useQuery({ queryKey: ["dashboard-ledger"], queryFn: krishiblockApi.publicLedger, enabled: Boolean(user) });
   const [overviewQuery, listingsQuery, ordersQuery, incomingOrdersQuery, transactionsQuery] = queries;
   const overview = useMemo(() => normalizeOverview(overviewQuery.data), [overviewQuery.data]);
   const listings = useMemo(() => normalizeListings(listingsQuery.data?.items || []), [listingsQuery.data?.items]);
@@ -64,7 +64,7 @@ export default function Dashboard() {
 
   const listingInsightsQuery = useQuery({
     queryKey: ["workspace-listing-insights", listingForm.crop_name, listingForm.market_type],
-    queryFn: () => agrichainApi.listingInsights({ crop: listingForm.crop_name, market_type: listingForm.market_type }),
+    queryFn: () => krishiblockApi.listingInsights({ crop: listingForm.crop_name, market_type: listingForm.market_type }),
     enabled: Boolean(isFarmer && listingFormOpen && listingForm.crop_name),
   });
   const listingInsights = useMemo(() => normalizeListingInsights(listingInsightsQuery.data), [listingInsightsQuery.data]);
@@ -91,14 +91,14 @@ export default function Dashboard() {
         <WorkspaceHero isFarmer={isFarmer} onCreateListing={() => openCreateListing({ overview, setActiveTab, setEditingListingId, setListingForm, setListingFormOpen })} onOpenLedger={() => setActiveTab("ledger")} overview={overview} />
         <div className="segmented-control workspace-tabs">{TAB_OPTIONS.map((tab) => <button className={activeTab === tab.id ? "segment active" : "segment"} key={tab.id} onClick={() => setActiveTab(tab.id)} type="button">{tab.label}</button>)}</div>
         {activeTab === "overview" ? <WorkspaceOverviewTab overview={overview} onOpenLedger={() => setActiveTab("ledger")} /> : null}
-        {activeTab === "operations" ? <WorkspaceOperationsTab {...buildOperationsProps({ isFarmer, overview, listingFormOpen, listingForm, setListingForm, listingQuantityError, listingPriceError, listingInsights, editingListingId, submitting, listings, orders, incomingOrders, setListingFormOpen, setEditingListingId, setCancelListingId, setConfirmOrder, setDispatchOrderId, setActiveTab, onSubmitListing: () => submitListing({ agrichainApi, editingListingId, listingForm, overview, setSubmitting, resetListingForm: () => resetListingForm({ overview, setListingForm, setEditingListingId, setListingFormOpen }), refreshAll }), onResetListingForm: () => resetListingForm({ overview, setListingForm, setEditingListingId, setListingFormOpen }) })} /> : null}
-        {activeTab === "wallet" ? <WorkspaceWalletTab amount={amount} amountError={amountError} overview={overview} setAmount={setAmount} setUpiId={setUpiId} setWalletMode={setWalletMode} submitting={submitting} transactions={transactionsQuery.data?.items || overview.feed.recent_transactions || []} upiError={upiError} upiId={upiId} walletMode={walletMode} onSubmitWalletAction={() => submitWalletAction({ agrichainApi, walletMode, amount, upiId, amountError, upiError, setSubmitting, setWalletMode, setAmount, setUpiId, refreshAll })} /> : null}
+        {activeTab === "operations" ? <WorkspaceOperationsTab {...buildOperationsProps({ isFarmer, overview, listingFormOpen, listingForm, setListingForm, listingQuantityError, listingPriceError, listingInsights, editingListingId, submitting, listings, orders, incomingOrders, setListingFormOpen, setEditingListingId, setCancelListingId, setConfirmOrder, setDispatchOrderId, setActiveTab, onSubmitListing: () => submitListing({ krishiblockApi, editingListingId, listingForm, overview, setSubmitting, resetListingForm: () => resetListingForm({ overview, setListingForm, setEditingListingId, setListingFormOpen }), refreshAll }), onResetListingForm: () => resetListingForm({ overview, setListingForm, setEditingListingId, setListingFormOpen }) })} /> : null}
+        {activeTab === "wallet" ? <WorkspaceWalletTab amount={amount} amountError={amountError} overview={overview} setAmount={setAmount} setUpiId={setUpiId} setWalletMode={setWalletMode} submitting={submitting} transactions={transactionsQuery.data?.items || overview.feed.recent_transactions || []} upiError={upiError} upiId={upiId} walletMode={walletMode} onSubmitWalletAction={() => submitWalletAction({ krishiblockApi, walletMode, amount, upiId, amountError, upiError, setSubmitting, setWalletMode, setAmount, setUpiId, refreshAll })} /> : null}
         {activeTab === "ledger" ? <WorkspaceLedgerTab ledger={ledgerQuery.data} /> : null}
-        {activeTab === "account" ? <WorkspaceAccountTab overview={overview} profileForm={profileForm} setProfileForm={setProfileForm} submitting={submitting} onSaveProfile={() => saveProfile({ agrichainApi, profileForm, updateUser, setSubmitting, refreshAll })} /> : null}
+        {activeTab === "account" ? <WorkspaceAccountTab overview={overview} profileForm={profileForm} setProfileForm={setProfileForm} submitting={submitting} onSaveProfile={() => saveProfile({ krishiblockApi, profileForm, updateUser, setSubmitting, refreshAll })} /> : null}
       </section>
-      <ConfirmDialog open={Boolean(confirmOrder)} onClose={() => setConfirmOrder(null)} onConfirm={() => confirmDelivery({ agrichainApi, confirmOrder, setSubmitting, setConfirmOrder, refreshAll })} title="Confirm delivery" description={confirmOrder ? `This releases escrow for ${confirmOrder.listing.crop_label}. Delivery code ${confirmOrder.delivery_code || confirmOrder.release_key_hint} will be attached automatically.` : "Confirm buyer delivery to release escrow."} confirmLabel="Release escrow" busy={submitting} />
-      <ConfirmDialog open={Boolean(dispatchOrderId)} onClose={() => setDispatchOrderId(null)} onConfirm={() => dispatchOrder({ agrichainApi, dispatchOrderId, setSubmitting, setDispatchOrderId, refreshAll })} title="Mark order as dispatched" description="This tells the buyer the order is on the way and unlocks one-click delivery confirmation." confirmLabel="Mark dispatched" busy={submitting} />
-      <ConfirmDialog open={Boolean(cancelListingId)} onClose={() => setCancelListingId(null)} onConfirm={() => cancelListing({ agrichainApi, cancelListingId, setSubmitting, setCancelListingId, refreshAll })} title="Cancel listing" description="This closes the listing for new buyers. Listings with active escrow or transit orders cannot be cancelled yet." confirmLabel="Cancel listing" busy={submitting} />
+      <ConfirmDialog open={Boolean(confirmOrder)} onClose={() => setConfirmOrder(null)} onConfirm={() => confirmDelivery({ krishiblockApi, confirmOrder, setSubmitting, setConfirmOrder, refreshAll })} title="Confirm delivery" description={confirmOrder ? `This releases escrow for ${confirmOrder.listing.crop_label}. Delivery code ${confirmOrder.delivery_code || confirmOrder.release_key_hint} will be attached automatically.` : "Confirm buyer delivery to release escrow."} confirmLabel="Release escrow" busy={submitting} />
+      <ConfirmDialog open={Boolean(dispatchOrderId)} onClose={() => setDispatchOrderId(null)} onConfirm={() => dispatchOrder({ krishiblockApi, dispatchOrderId, setSubmitting, setDispatchOrderId, refreshAll })} title="Mark order as dispatched" description="This tells the buyer the order is on the way and unlocks one-click delivery confirmation." confirmLabel="Mark dispatched" busy={submitting} />
+      <ConfirmDialog open={Boolean(cancelListingId)} onClose={() => setCancelListingId(null)} onConfirm={() => cancelListing({ krishiblockApi, cancelListingId, setSubmitting, setCancelListingId, refreshAll })} title="Cancel listing" description="This closes the listing for new buyers. Listings with active escrow or transit orders cannot be cancelled yet." confirmLabel="Cancel listing" busy={submitting} />
     </>
   );
 }
@@ -132,16 +132,16 @@ function resetListingForm({ overview, setListingForm, setEditingListingId, setLi
   setListingFormOpen(false);
 }
 
-async function submitListing({ agrichainApi, editingListingId, listingForm, overview, setSubmitting, resetListingForm, refreshAll }) {
+async function submitListing({ krishiblockApi, editingListingId, listingForm, overview, setSubmitting, resetListingForm, refreshAll }) {
   if (validatePositiveNumber(listingForm.quantity_kg, "Quantity") || validatePositiveNumber(listingForm.price_per_kg, "Price")) return;
   setSubmitting(true);
   try {
     const payload = { ...listingForm, quantity_kg: Number(listingForm.quantity_kg), price_per_kg: Number(listingForm.price_per_kg), market_type: overview.profile.market_type === "both" ? listingForm.market_type : undefined };
     if (editingListingId) {
-      await agrichainApi.updateListing(editingListingId, payload);
+      await krishiblockApi.updateListing(editingListingId, payload);
       toast.success("Listing updated.");
     } else {
-      await agrichainApi.createListing(payload);
+      await krishiblockApi.createListing(payload);
       toast.success("Listing published.");
     }
     resetListingForm();
@@ -151,14 +151,14 @@ async function submitListing({ agrichainApi, editingListingId, listingForm, over
   }
 }
 
-async function submitWalletAction({ agrichainApi, walletMode, amount, upiId, amountError, upiError, setSubmitting, setWalletMode, setAmount, setUpiId, refreshAll }) {
+async function submitWalletAction({ krishiblockApi, walletMode, amount, upiId, amountError, upiError, setSubmitting, setWalletMode, setAmount, setUpiId, refreshAll }) {
   if (amountError || upiError) {
     toast.error(amountError || upiError);
     return;
   }
   setSubmitting(true);
   try {
-    const result = walletMode === "add" ? await agrichainApi.addWalletFunds({ amount: Number(amount) }) : await agrichainApi.withdrawWalletFunds({ amount: Number(amount), upi_id: upiId.trim().toLowerCase() });
+    const result = walletMode === "add" ? await krishiblockApi.addWalletFunds({ amount: Number(amount) }) : await krishiblockApi.withdrawWalletFunds({ amount: Number(amount), upi_id: upiId.trim().toLowerCase() });
     toast.success(result.message);
     setWalletMode("");
     setAmount("");
@@ -169,11 +169,11 @@ async function submitWalletAction({ agrichainApi, walletMode, amount, upiId, amo
   }
 }
 
-async function confirmDelivery({ agrichainApi, confirmOrder, setSubmitting, setConfirmOrder, refreshAll }) {
+async function confirmDelivery({ krishiblockApi, confirmOrder, setSubmitting, setConfirmOrder, refreshAll }) {
   if (!confirmOrder?.id) return;
   setSubmitting(true);
   try {
-    const result = await agrichainApi.confirmOrder(confirmOrder.id, confirmOrder.delivery_code ? { release_key: confirmOrder.delivery_code } : {});
+    const result = await krishiblockApi.confirmOrder(confirmOrder.id, confirmOrder.delivery_code ? { release_key: confirmOrder.delivery_code } : {});
     toast.success(result.message);
     setConfirmOrder(null);
     await refreshAll();
@@ -182,11 +182,11 @@ async function confirmDelivery({ agrichainApi, confirmOrder, setSubmitting, setC
   }
 }
 
-async function dispatchOrder({ agrichainApi, dispatchOrderId, setSubmitting, setDispatchOrderId, refreshAll }) {
+async function dispatchOrder({ krishiblockApi, dispatchOrderId, setSubmitting, setDispatchOrderId, refreshAll }) {
   if (!dispatchOrderId) return;
   setSubmitting(true);
   try {
-    const result = await agrichainApi.dispatchOrder(dispatchOrderId);
+    const result = await krishiblockApi.dispatchOrder(dispatchOrderId);
     toast.success(result.message);
     setDispatchOrderId(null);
     await refreshAll();
@@ -195,11 +195,11 @@ async function dispatchOrder({ agrichainApi, dispatchOrderId, setSubmitting, set
   }
 }
 
-async function cancelListing({ agrichainApi, cancelListingId, setSubmitting, setCancelListingId, refreshAll }) {
+async function cancelListing({ krishiblockApi, cancelListingId, setSubmitting, setCancelListingId, refreshAll }) {
   if (!cancelListingId) return;
   setSubmitting(true);
   try {
-    const result = await agrichainApi.cancelListing(cancelListingId);
+    const result = await krishiblockApi.cancelListing(cancelListingId);
     toast.success(result.message);
     setCancelListingId(null);
     await refreshAll();
@@ -208,10 +208,10 @@ async function cancelListing({ agrichainApi, cancelListingId, setSubmitting, set
   }
 }
 
-async function saveProfile({ agrichainApi, profileForm, updateUser, setSubmitting, refreshAll }) {
+async function saveProfile({ krishiblockApi, profileForm, updateUser, setSubmitting, refreshAll }) {
   setSubmitting(true);
   try {
-    const result = await agrichainApi.updateProfile(profileForm);
+    const result = await krishiblockApi.updateProfile(profileForm);
     updateUser(result);
     toast.success("Profile updated.");
     await refreshAll();
@@ -219,3 +219,4 @@ async function saveProfile({ agrichainApi, profileForm, updateUser, setSubmittin
     setSubmitting(false);
   }
 }
+

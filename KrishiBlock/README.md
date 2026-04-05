@@ -1,6 +1,6 @@
 # KrishiBlock
 
-KrishiBlock is now the merged product workspace for the code in this repository: the original `agrichain` backend and traceability system, the stronger buyer/farmer dashboard ideas from `kisanlink`, and the bot-first flow concepts from `farm_bot`.
+KrishiBlock is now the merged product workspace for the code in this repository: the original backend and traceability system, the stronger buyer/farmer dashboard ideas from `kisanlink`, and the bot-first flow concepts from `farm_bot`.
 
 The current build gives you one webapp with:
 - web registration and OTP login
@@ -27,16 +27,16 @@ Update only the environment files before running:
 ## Local Setup
 
 1. Start services:
-   - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\agrichain"`
+   - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\KrishiBlock"`
    - `docker compose up -d`
 2. Start the backend:
-   - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\agrichain\backend"`
+   - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\KrishiBlock\backend"`
    - create and activate a virtual environment
    - `pip install -r requirements.txt`
    - `alembic upgrade head`
    - `uvicorn app.main:app --reload`
 3. Start the frontend:
-   - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\agrichain\frontend"`
+   - `cd "C:\RAKSHAK\MY CODE\team-bumblebee\KrishiBlock\frontend"`
    - `npm install`
    - `npm run dev`
 
@@ -102,3 +102,5 @@ From `frontend`:
 - QR verification pages display app-managed traceability data, not third-party certification.
 - Mandi pricing uses the government API when available and falls back to cached defaults on failure.
 - Twilio and ngrok are optional for local development because the bot simulator and development OTP fallback still work.
+
+

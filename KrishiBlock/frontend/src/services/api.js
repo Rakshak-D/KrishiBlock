@@ -105,7 +105,7 @@ export async function unwrap(requestPromise) {
   return response.data?.data ?? response.data;
 }
 
-export const agrichainApi = {
+export const krishiblockApi = {
   register: (payload) => unwrap(api.post("/auth/register", payload)),
   requestOtp: (payload, silenceToast = false) => unwrap(api.post("/auth/request-otp", payload, { __silenceToast: silenceToast })),
   verifyOtp: (payload) => unwrap(api.post("/auth/verify-otp", payload)),
@@ -138,3 +138,4 @@ export const agrichainApi = {
 };
 
 export default api;
+

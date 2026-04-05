@@ -11,11 +11,12 @@ coverage/
 htmlcov/
 *.log
 
-agrichain/backend/.env
-agrichain/backend/venv/
-agrichain/backend/.pytest_cache/
-agrichain/backend/.mypy_cache/
-agrichain/backend/app/static/qr/
-agrichain/frontend/node_modules/
-agrichain/frontend/dist/
-agrichain/frontend/.vite/
+KrishiBlock/backend/.env
+KrishiBlock/backend/venv/
+KrishiBlock/backend/.pytest_cache/
+KrishiBlock/backend/.mypy_cache/
+KrishiBlock/backend/app/static/qr/
+KrishiBlock/frontend/node_modules/
+KrishiBlock/frontend/dist/
+KrishiBlock/frontend/.vite/
+

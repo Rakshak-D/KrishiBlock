@@ -3,15 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, PackageCheck, ShieldCheck, WalletCards } from "lucide-react";
 import ListingCard from "../components/ListingCard";
 import ErrorState from "../components/ErrorState";
-import { agrichainApi } from "../services/api";
+import { krishiblockApi } from "../services/api";
 import useAuthStore from "../store/authStore";
 import { formatCompactNumber, formatCurrency, formatDateTime, labelize } from "../lib/formatters";
 
 export default function HomePage() {
   const user = useAuthStore((state) => state.user);
-  const overviewQuery = useQuery({ queryKey: ["home-overview"], queryFn: agrichainApi.listingsOverview });
-  const localQuery = useQuery({ queryKey: ["home-local"], queryFn: () => agrichainApi.listings({ page_size: 4 }) });
-  const ledgerQuery = useQuery({ queryKey: ["home-ledger"], queryFn: () => agrichainApi.publicLedger({ limit: 4 }) });
+  const overviewQuery = useQuery({ queryKey: ["home-overview"], queryFn: krishiblockApi.listingsOverview });
+  const localQuery = useQuery({ queryKey: ["home-local"], queryFn: () => krishiblockApi.listings({ page_size: 4 }) });
+  const ledgerQuery = useQuery({ queryKey: ["home-ledger"], queryFn: () => krishiblockApi.publicLedger({ limit: 4 }) });
 
   if (overviewQuery.isError) {
     return (
@@ -197,4 +197,5 @@ export default function HomePage() {
     </section>
   );
 }
+
 

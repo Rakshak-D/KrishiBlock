@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import LedgerPanel from "../components/ledger/LedgerPanel";
 import ErrorState from "../components/ErrorState";
-import { agrichainApi } from "../services/api";
+import { krishiblockApi } from "../services/api";
 import useAuthStore from "../store/authStore";
 
 export default function LedgerPage() {
@@ -12,7 +12,7 @@ export default function LedgerPage() {
   const deferredSearch = useDeferredValue(search.trim());
   const ledgerQuery = useQuery({
     queryKey: ["public-ledger", deferredSearch],
-    queryFn: () => agrichainApi.publicLedger(deferredSearch ? { search: deferredSearch } : {}),
+    queryFn: () => krishiblockApi.publicLedger(deferredSearch ? { search: deferredSearch } : {}),
   });
 
   if (ledgerQuery.isLoading) {
@@ -82,3 +82,4 @@ export default function LedgerPage() {
     </section>
   );
 }
+

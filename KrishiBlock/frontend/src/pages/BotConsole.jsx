@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Bot, MessageCircleMore, QrCode, RefreshCcw, RotateCcw, SendHorizonal, ShieldCheck, WalletCards } from "lucide-react";
 import toast from "react-hot-toast";
-import { agrichainApi, resolveAssetUrl } from "../services/api";
+import { krishiblockApi, resolveAssetUrl } from "../services/api";
 
 const QUICK_GROUPS = {
   Start: ["HI", "MENU", "1", "2"],
@@ -49,7 +49,7 @@ export default function BotConsole() {
     setSubmitting(true);
     try {
       setMessages((current) => [...current, { role: "user", text }]);
-      const payload = await agrichainApi.simulateMessage({ phone: phone.trim(), message: text });
+      const payload = await krishiblockApi.simulateMessage({ phone: phone.trim(), message: text });
       setMessages((current) => [
         ...current,
         {
@@ -67,7 +67,7 @@ export default function BotConsole() {
   const resetSession = async () => {
     setResetting(true);
     try {
-      await agrichainApi.resetSimulatedSession({ phone: phone.trim() });
+      await krishiblockApi.resetSimulatedSession({ phone: phone.trim() });
       setMessages([]);
       toast.success("Conversation session reset.");
     } finally {
@@ -253,4 +253,5 @@ export default function BotConsole() {
     </section>
   );
 }
+
 
